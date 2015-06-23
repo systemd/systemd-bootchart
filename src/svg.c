@@ -45,6 +45,7 @@
 #define ps_to_graph(n) ((n) * arg_scale_y)
 #define kb_to_graph(m) ((m) * arg_scale_y * 0.0001)
 #define to_color(n) (192.0 - ((n) * 192.0))
+#define to_ms(n) (1000.0 * n)
 
 static const char * const colorwheel[12] = {
         "rgb(255,32,32)",  // red
@@ -208,7 +209,9 @@ static int svg_title(FILE *of, const char *build, int pscount, double log_start,
         fprintf(of, "<text class=\"t2\" x=\"20\" y=\"125\">Log start time: %.03fs</text>\n", log_start);
         fprintf(of, "<text class=\"t2\" x=\"20\" y=\"140\">Idle time: ");
 
-        if (idletime >= 0.0)
+        if (idletime >= 0.0 && idletime <= 1.0)
+                fprintf(of, "%.01fms", to_ms(idletime));
+        else if (idletime >= 0.0)
                 fprintf(of, "%.03fs", idletime);
         else
                 fprintf(of, "Not detected");
@@ -989,10 +992,18 @@ static void svg_do_initcall(FILE *of, struct list_sample_data *head, int count_o
                         ps_to_graph(1));
 
                 /* label */
-                fprintf(of, "  <text x=\"%.03f\" y=\"%.03f\">%s <tspan class=\"run\">%.03fs</tspan></text>\n",
-                        time_to_graph(t - (usecs / 1000000.0)) + 5,
-                        ps_to_graph(kcount) + 15,
-                        func, usecs / 1000000.0);
+                if (usecs > 1000000.0)
+                        fprintf(of, "  <text x=\"%.03f\" y=\"%.03f\">%s <tspan class=\"run\">%.03fs</tspan></text>\n",
+                                time_to_graph(t - (usecs / 1000000.0)) + 5,
+                                ps_to_graph(kcount) + 15,
+                                func,
+                                usecs / 1000000.0);
+                else
+                        fprintf(of, "  <text x=\"%.03f\" y=\"%.03f\">%s <tspan class=\"run\">%.01fms</tspan></text>\n",
+                                time_to_graph(t - (usecs / 1000000.0)) + 5,
+                                ps_to_graph(kcount) + 15,
+                                func,
+                                usecs / 1000.0);
 
                 kcount++;
         }
@@ -1034,8 +1045,8 @@ static void svg_ps_bars(FILE *of,
                         continue;
 
                 /* leave some trace of what we actually filtered etc. */
-                fprintf(of, "<!-- %s [%i] ppid=%i runtime=%.03fs -->\n", enc_name, ps->pid,
-                        ps->ppid, ps->total);
+                fprintf(of, "<!-- %s [%i] ppid=%i runtime=%.03fms -->\n", enc_name, ps->pid,
+                        ps->ppid, to_ms(ps->total));
 
                 starttime = ps->first->sampledata->sampletime;
 
@@ -1117,13 +1128,23 @@ static void svg_ps_bars(FILE *of,
                         w = starttime;
 
                 /* text label of process name */
-                fprintf(of, "  <text x=\"%.03f\" y=\"%.03f\"><![CDATA[%s]]> [%i]<tspan class=\"run\">%.03fs</tspan> %s</text>\n",
-                        time_to_graph(w - graph_start) + 5.0,
-                        ps_to_graph(j) + 14.0,
-                        escaped ? escaped : ps->name,
-                        ps->pid,
-                        (ps->last->runtime - ps->first->runtime) / 1000000000.0,
-                        arg_show_cgroup ? ps->cgroup : "");
+                if ((ps->last->runtime - ps->first->runtime) > 1000000000.0)
+                        fprintf(of, "  <text x=\"%.03f\" y=\"%.03f\"><![CDATA[%s]]> [%i]<tspan class=\"run\">%.03fs</tspan> %s</text>\n",
+                                time_to_graph(w - graph_start) + 5.0,
+                                ps_to_graph(j) + 14.0,
+                                escaped ? escaped : ps->name,
+                                ps->pid,
+                                (ps->last->runtime - ps->first->runtime) / 1000000000.0,
+                                arg_show_cgroup ? ps->cgroup : "");
+                else
+                        fprintf(of, "  <text x=\"%.03f\" y=\"%.03f\"><![CDATA[%s]]> [%i]<tspan class=\"run\">%.01fms</tspan> %s</text>\n",
+                                time_to_graph(w - graph_start) + 5.0,
+                                ps_to_graph(j) + 14.0,
+                                escaped ? escaped : ps->name,
+                                ps->pid,
+                                (ps->last->runtime - ps->first->runtime) / 1000000.0,
+                                arg_show_cgroup ? ps->cgroup : "");
+
                 /* paint lines to the parent process */
                 if (ps->parent) {
                         /* horizontal part */
@@ -1196,10 +1217,16 @@ static void svg_ps_bars(FILE *of,
                                 -arg_scale_y,
                                 time_to_graph(idletime),
                                 ps_to_graph(pcount) + arg_scale_y);
-                        fprintf(of, "<text class=\"idle\" x=\"%.03f\" y=\"%.03f\">%.01fs</text>\n",
-                                time_to_graph(idletime) + 5.0,
-                                ps_to_graph(pcount) + arg_scale_y,
-                                idletime);
+                        if (idletime > 1.0)
+                                fprintf(of, "<text class=\"idle\" x=\"%.03f\" y=\"%.03f\">%.01fs</text>\n",
+                                        time_to_graph(idletime) + 5.0,
+                                        ps_to_graph(pcount) + arg_scale_y,
+                                        idletime);
+                        else
+                                fprintf(of, "<text class=\"idle\" x=\"%.03f\" y=\"%.03f\">%.01fms</text>\n",
+                                        time_to_graph(idletime) + 5.0,
+                                        ps_to_graph(pcount) + arg_scale_y,
+                                        to_ms(idletime));
                         break;
                 }
 
@@ -1232,9 +1259,9 @@ static void svg_top_ten_cpu(FILE *of, struct ps_struct *ps_first) {
 
         fprintf(of, "<text class=\"t2\" x=\"20\" y=\"0\">Top CPU consumers:</text>\n");
         for (n = 0; n < 10; n++)
-                fprintf(of, "<text class=\"t3\" x=\"20\" y=\"%d\">%3.03fs - <![CDATA[%s]]> [%d]</text>\n",
+                fprintf(of, "<text class=\"t3\" x=\"20\" y=\"%d\">%3.01fms - <![CDATA[%s]]> [%d]</text>\n",
                         20 + (n * 13),
-                        top[n]->total,
+                        to_ms(top[n]->total),
                         top[n]->name,
                         top[n]->pid);
 }
