@@ -1,0 +1,4 @@
+- plot per-process IO utilization
+- group processes based on service association (cgroups)
+- document initcall_debug
+- kernel cmdline "bootchart" option for simplicity?

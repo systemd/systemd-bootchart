@@ -1,0 +1,3 @@
+For systemd-bootchart, several proc debug interfaces are required in the kernel config:
+  CONFIG_SCHEDSTATS
+  CONFIG_SCHED_DEBUG
