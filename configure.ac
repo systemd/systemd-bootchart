@@ -167,6 +167,9 @@ AC_ARG_WITH([rootlibdir],
 AC_SUBST([rootprefix], [$with_rootprefix])
 AC_SUBST([rootlibdir], [$with_rootlibdir])
 
+AC_PATH_PROG([XSLTPROC], [xsltproc])
+AS_IF([test -z "$XSLTPROC"], AC_MSG_ERROR([*** xsltproc is required for man pages]))
+
 AC_CONFIG_FILES([
         Makefile
 ])
