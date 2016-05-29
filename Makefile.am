@@ -63,7 +63,14 @@ dist_noinst_DATA = \
 	LICENSE.LGPL2.1 \
 	LICENSE.GPL2
 
-EXTRA_DIST = man/bootchart.conf.xml man/systemd-bootchart.xml units/systemd-bootchart.service.in
+EXTRA_DIST = \
+	man/bootchart.conf.xml \
+	man/systemd-bootchart.xml \
+	man/custom-man.xsl \
+	man/standard-conf.xml \
+	man/standard-options.xml \
+	units/systemd-bootchart.service.in
+
 MANPAGES = man/bootchart.conf.5 man/systemd-bootchart.1
 MANPAGES_ALIAS = man/bootchart.conf.d.5
 
