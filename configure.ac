@@ -147,6 +147,18 @@ CC_CHECK_FLAGS_APPEND([with_ldflags], [LDFLAGS], [\
         -Wl,-fuse-ld=gold])
 AC_SUBST([OUR_LDFLAGS], "$with_ldflags $sanitizer_ldflags")
 
+AC_ARG_WITH([rootprefix],
+        AS_HELP_STRING([--with-rootprefix=DIR], [rootfs directory prefix for config files and binaries necessary for boot]),
+        [], [with_rootprefix=${ac_default_prefix}])
+# --with-rootprefix= (empty) should default to "/" but AX_NORMALIZE_PATH
+# defaults those to ".", solve that here for now until we can find a suitable
+# fix for AX_NORMALIZE_PATH upstream at autoconf-archive.
+# See: https://github.com/systemd/systemd/issues/54
+if test "x${with_rootprefix}" = "x"; then
+        with_rootprefix="/"
+fi
+AX_NORMALIZE_PATH([with_rootprefix])
+
 AC_ARG_WITH([rootlibdir],
         AS_HELP_STRING([--with-rootlibdir=DIR], [Root directory for libraries necessary for boot]),
         [],
