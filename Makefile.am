@@ -178,10 +178,10 @@ libutils_la_SOURCES = \
 
 libutils_la_CFLAGS = \
 	$(AM_CFLAGS) \
-	$(LIBSYSTEMD_JOURNAL_CFLAGS)
+	$(LIBSYSTEMD_CFLAGS)
 
 libutils_la_LIBADD = \
-	$(LIBSYSTEMD_JOURNAL_LIBS)
+	$(LIBSYSTEMD_LIBS)
 
 noinst_LTLIBRARIES = libutils.la
 
