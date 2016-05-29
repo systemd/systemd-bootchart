@@ -62,8 +62,8 @@ AC_CHECK_DECLS([gettid, getrandom], [], [], [[
 #include <linux/random.h>
 ]])
 
-PKG_CHECK_MODULES(LIBSYSTEMD_JOURNAL, [libsystemd-journal >= 221],
-	[], [AC_MSG_ERROR([*** libsystemd-journal libraries not found])])
+PKG_CHECK_MODULES(LIBSYSTEMD, [libsystemd >= 221],
+	[], [AC_MSG_ERROR([*** libsystemd library not found])])
 
 CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -pipe \
