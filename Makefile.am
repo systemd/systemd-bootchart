@@ -74,7 +74,10 @@ EXTRA_DIST = \
 MANPAGES = man/bootchart.conf.5 man/systemd-bootchart.1
 MANPAGES_ALIAS = man/bootchart.conf.d.5
 
-man_MANS = $(MANPAGES) $(MANPAGES_ALIAS)
+if COND_man
+MAYBE_MANPAGES = $(MANPAGES) $(MANPAGES_ALIAS)
+endif
+man_MANS = $(MAYBE_MANPAGES)
 
 man/bootchart.conf.d.5: man/bootchart.conf.5
 
