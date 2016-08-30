@@ -167,8 +167,16 @@ AC_ARG_WITH([rootlibdir],
 AC_SUBST([rootprefix], [$with_rootprefix])
 AC_SUBST([rootlibdir], [$with_rootlibdir])
 
+AC_ARG_ENABLE([man],
+        AS_HELP_STRING([--diable-man],[Build the man pages (default: yes)]),
+        [build_man=$enableval],
+        [build_man=yes])
+
 AC_PATH_PROG([XSLTPROC], [xsltproc])
-AS_IF([test -z "$XSLTPROC"], AC_MSG_ERROR([*** xsltproc is required for man pages]))
+AS_IF([test -z "$XSLTPROC" -a "$build_man" = "yes"],
+                [AC_MSG_ERROR([*** xsltproc is required for man pages])])
+
+AM_CONDITIONAL([COND_man],[test "$build_man" = "yes"])
 
 AC_CONFIG_FILES([
         Makefile
