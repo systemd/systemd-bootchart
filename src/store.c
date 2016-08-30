@@ -249,8 +249,6 @@ schedstat_next:
 
                         /* mark our first sample */
                         ps->first = ps->last = ps->sample;
-                        ps->sample->runtime = atoll(rt);
-                        ps->sample->waittime = atoll(wt);
 
                         /* get name, start time */
                         if (ps->sched < 0) {
