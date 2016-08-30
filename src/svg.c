@@ -90,7 +90,7 @@ static void svg_header(FILE *of, struct list_sample_data *head, double graph_sta
         /* height is variable based on pss, psize, ksize */
         h = 400.0 + (arg_scale_y * 30.0) /* base graphs and title */
             + (arg_pss ? (100.0 * arg_scale_y) + (arg_scale_y * 7.0) : 0.0) /* pss estimate */
-            + psize + ksize + esize + (n_cpus * 15 * arg_scale_y);
+            + psize + ksize + esize + ((n_cpus+1) * 15 * arg_scale_y);
 
         fprintf(of, "<?xml version=\"1.0\" standalone=\"no\"?>\n");
         fprintf(of, "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" ");
@@ -1055,6 +1055,8 @@ static void svg_ps_bars(FILE *of,
                                         ps_to_graph(j-1) + 10.0, /* whee, use the last value here */
                                         ps->parent->pos_x,
                                         ps->parent->pos_y);
+                        continue;
+                } else {
                         continue;
                 }
 
