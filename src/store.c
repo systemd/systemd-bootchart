@@ -53,7 +53,7 @@ static int skip = 0;
 double gettime_ns(void) {
         struct timespec n;
 
-        clock_gettime(CLOCK_MONOTONIC, &n);
+        clock_gettime(clock_boottime_or_monotonic(), &n);
 
         return (n.tv_sec + (n.tv_nsec / (double) NSEC_PER_SEC));
 }
@@ -249,8 +249,6 @@ schedstat_next:
 
                         /* mark our first sample */
                         ps->first = ps->last = ps->sample;
-                        ps->sample->runtime = atoll(rt);
-                        ps->sample->waittime = atoll(wt);
 
                         /* get name, start time; requires CONFIG_SCHED_DEBUG in kernel */
                         if (ps->sched < 0) {
