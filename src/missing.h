@@ -55,3 +55,7 @@ static inline int getrandom(void *buffer, size_t count, unsigned flags) {
         return syscall(__NR_getrandom, buffer, count, flags);
 }
 #endif
+
+#ifndef GRND_NONBLOCK
+#define GRND_NONBLOCK 0x0001
+#endif
