@@ -27,7 +27,7 @@
   - Anders Norgaard - PyBootchartgui
   - Michael Meeks - bootchart2
   - Scott James Remnant - Ubuntu C-based logger
-  - Arjan van der Ven - for the idea to merge bootgraph.pl functionality
+  - Arjan van de Ven - for the idea to merge bootgraph.pl functionality
 
  ***/
 
