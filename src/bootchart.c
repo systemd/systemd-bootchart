@@ -307,6 +307,7 @@ int main(int argc, char *argv[]) {
         _cleanup_free_ char *build = NULL;
         _cleanup_fclose_ FILE *of = NULL;
         _cleanup_close_ int sysfd = -1;
+        int schfd;
         struct ps_struct *ps_first;
         double graph_start;
         double log_start;
@@ -350,6 +351,12 @@ int main(int argc, char *argv[]) {
         rlim.rlim_cur = 4096;
         rlim.rlim_max = 4096;
         (void) setrlimit(RLIMIT_NOFILE, &rlim);
+
+        schfd = open("/proc/sys/kernel/sched_schedstats", O_WRONLY);
+        if (schfd >= 0) {
+                write(schfd, "1\n", 2);
+                close(schfd);
+        }
 
         /* start with empty ps LL */
         ps_first = new0(struct ps_struct, 1);
