@@ -61,9 +61,10 @@
       Collected results are output as an SVG graph. Normally,
       systemd-bootchart is invoked by the kernel by passing
       <option>init=<filename>/usr/lib/systemd/systemd-bootchart</filename></option>
-      on the kernel command line. systemd-bootchart will then fork the
-      real init off to resume normal system startup, while monitoring
-      and logging startup information in the background.
+      on the kernel command line, adding <option>initcall_debug</option>
+      to collect data on kernel init threads. systemd-bootchart
+      will then fork the real init off to resume normal system startup,
+      while monitoring and logging startup information in the background.
     </para>
     <para>
       After collecting a certain amount of data (usually 15-30
@@ -107,7 +108,16 @@
         <command>systemd-bootchart</command> instead of the init
         process. In turn, <command>systemd-bootchart</command> will
         invoke <command>/usr/lib/systemd/systemd</command>.
-        </para></listitem>
+        Data will be collected on kernel init threads and also
+        processes including the services started by systemd.</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><emphasis>systemd unit</emphasis></term>
+        <listitem><para>A unit file is provided,
+        <command>systemd-bootchart.service</command>. If enabled when
+        the system starts it will collect data on processes including
+        the services started by systemd.</para></listitem>
       </varlistentry>
 
       <varlistentry>
