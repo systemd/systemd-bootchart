@@ -952,15 +952,22 @@ static void svg_do_initcall(FILE *of, struct list_sample_data *head, int count_o
                 int c;
                 int z = 0;
                 char l[256];
+                char *p;
 
                 if (fgets(l, sizeof(l) - 1, f) == NULL)
                         continue;
 
-                c = sscanf(l, "[%lf] initcall %s %*s %d %*s %d %*s",
+                if (l[0] == '<' && l[1] && l[2] == '>')
+                        p = l + 3;
+                else
+                        p = l;
+
+
+                c = sscanf(p, "[%lf] initcall %s %*s %d %*s %d %*s",
                            &t, func, &ret, &usecs);
                 if (c != 4) {
                         /* also parse initcalls done by module loading */
-                        c = sscanf(l, "[%lf] initcall %s %*s %*s %d %*s %d %*s",
+                        c = sscanf(p, "[%lf] initcall %s %*s %*s %d %*s %d %*s",
                                    &t, func, &ret, &usecs);
                         if (c != 4)
                                 continue;
