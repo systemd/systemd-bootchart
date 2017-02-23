@@ -35,12 +35,6 @@ struct block_stat_struct {
         int bo;
 };
 
-struct cpu_stat_sample_struct {
-        /* /proc/schedstat fields 10 & 11 (after name) */
-        double runtime;
-        double waittime;
-};
-
 /* per process, per sample data we will log */
 struct ps_sched_struct {
         /* /proc/<n>/schedstat fields 1 & 2 */
