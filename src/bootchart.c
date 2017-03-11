@@ -41,7 +41,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/resource.h>
 #include <sys/uio.h>
 #include <time.h>
 #include <unistd.h>
@@ -323,7 +322,6 @@ int main(int argc, char *argv[]) {
         time_t t = 0;
         int r, samples;
         struct ps_struct *ps;
-        struct rlimit rlim;
         struct list_sample_data *head;
         struct sigaction sig = {
                 .sa_handler = signal_handler,
@@ -350,10 +348,6 @@ int main(int argc, char *argv[]) {
                         execl(arg_init_path, arg_init_path, NULL);
         }
         argv[0][0] = '@';
-
-        rlim.rlim_cur = 4096;
-        rlim.rlim_max = 4096;
-        (void) setrlimit(RLIMIT_NOFILE, &rlim);
 
         schfd = open("/proc/sys/kernel/sched_schedstats", O_WRONLY);
         if (schfd >= 0) {
@@ -466,8 +460,8 @@ int main(int argc, char *argv[]) {
 
         /* do some cleanup, close fd's */
         ps = ps_first;
-        while (ps->next_ps) {
-                ps = ps->next_ps;
+        while (ps->next_running) {
+                ps = ps->next_running;
                 ps->schedstat = safe_close(ps->schedstat);
                 ps->sched = safe_close(ps->sched);
                 ps->smaps = safe_fclose(ps->smaps);
