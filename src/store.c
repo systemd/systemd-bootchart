@@ -93,6 +93,28 @@ static int pid_cmdline_strscpy(int procfd, char *buffer, size_t buf_len, int pid
         return 0;
 }
 
+static void garbage_collect_dead_processes(struct ps_struct *ps_first) {
+        struct ps_struct *ps;
+        struct ps_struct *ps_next;
+
+        ps = ps_first;
+        while ((ps_next = ps->next_running)) {
+                if (!ps_next->still_running) {
+                        /* close the stream and fds */
+                        ps_next->schedstat = safe_close(ps_next->schedstat);
+                        ps_next->sched = safe_close(ps_next->sched);
+                        if (ps->smaps)
+                                fclose(ps->smaps);
+
+                        ps->next_running = ps_next->next_running;
+                } else {
+                        ps = ps_next;
+                }
+                /* this resets the flag for both running and dead processes*/
+                ps_next->still_running = false;
+        }
+}
+
 int log_sample(DIR *proc,
                int sample,
                struct ps_struct *ps_first,
@@ -218,8 +240,8 @@ schedstat_next:
                         continue;
 
                 ps = ps_first;
-                while (ps->next_ps) {
-                        ps = ps->next_ps;
+                while (ps->next_running) {
+                        ps = ps->next_running;
                         if (ps->pid == pid)
                                 break;
                 }
@@ -230,7 +252,7 @@ schedstat_next:
                         char t[32];
                         struct ps_struct *parent;
 
-                        ps->next_ps = new0(struct ps_struct, 1);
+                        ps->next_ps = ps->next_running = new0(struct ps_struct, 1);
                         if (!ps->next_ps)
                                 return log_oom();
 
@@ -368,13 +390,8 @@ no_sched:
                 }
 
                 s = pread(ps->schedstat, buf, sizeof(buf) - 1, 0);
-                if (s <= 0) {
-                        /* clean up our file descriptors - assume that the process exited */
-                        close(ps->schedstat);
-                        ps->schedstat = -1;
-                        ps->sched = safe_close(ps->sched);
+                if (s <= 0)
                         continue;
-                }
 
                 buf[s] = '\0';
 
@@ -530,17 +547,13 @@ catch_rename:
                         }
 
                         s = pread(ps->sched, buf, sizeof(buf) - 1, 0);
-                        if (s <= 0) {
-                                /* clean up file descriptors */
-                                ps->sched = safe_close(ps->sched);
-                                ps->schedstat = safe_close(ps->schedstat);
-                                goto no_sched2;
-                        }
+                        if (s <= 0)
+                                continue;
 
                         buf[s] = '\0';
 
                         if (!sscanf(buf, "%s %*s %*s", key))
-                                goto no_sched2;
+                                continue;
 
                         strscpy(ps->name, sizeof(ps->name), key);
 
@@ -549,7 +562,10 @@ no_sched2:
                         if (arg_show_cmdline)
                                 pid_cmdline_strscpy(procfd, ps->name, sizeof(ps->name), pid);
                 }
+                ps->still_running = true;
         }
+        garbage_collect_dead_processes(ps_first);
+
 
         return 0;
 }
