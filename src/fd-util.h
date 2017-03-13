@@ -20,9 +20,8 @@
 ***/
 
 #include <dirent.h>
-#include <stdbool.h>
+#include <errno.h>
 #include <stdio.h>
-#include <sys/socket.h>
 
 #include "macro.h"
 

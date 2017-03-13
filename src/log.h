@@ -23,12 +23,12 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <sys/signalfd.h>
-#include <sys/socket.h>
 #include <syslog.h>
+#include <sys/uio.h>
 
 #include <systemd/sd-id128.h>
 
+#include "alloc-util.h"
 #include "macro.h"
 
 typedef enum LogTarget{

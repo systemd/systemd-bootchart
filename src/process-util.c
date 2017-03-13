@@ -17,39 +17,24 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <ctype.h>
 #include <errno.h>
 #include <limits.h>
-#include <linux/oom.h>
-#include <sched.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <sys/personality.h>
-#include <sys/prctl.h>
 #include <sys/types.h>
-#include <sys/wait.h>
-#include <syslog.h>
 #include <unistd.h>
 #ifdef HAVE_VALGRIND_VALGRIND_H
 #include <valgrind/valgrind.h>
 #endif
 
-#include "alloc-util.h"
-#include "escape.h"
 #include "fd-util.h"
-#include "fileio.h"
-#include "fs-util.h"
 #include "log.h"
 #include "macro.h"
 #include "missing.h"
 #include "process-util.h"
 #include "string-table.h"
-#include "string-util.h"
-#include "user-util.h"
-#include "util.h"
 
 int getenv_for_pid(pid_t pid, const char *field, char **_value) {
         _cleanup_fclose_ FILE *f = NULL;

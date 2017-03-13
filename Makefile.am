@@ -117,8 +117,6 @@ libutils_la_SOURCES = \
 	src/def.h \
 	src/dirent-util.c \
 	src/dirent-util.h \
-	src/escape.c \
-	src/escape.h \
 	src/fd-util.c \
 	src/fd-util.h \
 	src/fileio.c \
@@ -126,23 +124,17 @@ libutils_la_SOURCES = \
 	src/formats-util.h \
 	src/fs-util.c \
 	src/fs-util.h \
-	src/gunicode.c \
-	src/gunicode.h \
 	src/hash-funcs.c \
 	src/hash-funcs.h \
 	src/hashmap.c \
 	src/hashmap.h \
 	src/hexdecoct.c \
 	src/hexdecoct.h \
-	src/hostname-util.c \
-	src/hostname-util.h \
 	src/io-util.c \
 	src/io-util.h \
 	src/list.h \
 	src/log.c \
 	src/log.h \
-	src/login-util.c \
-	src/login-util.h \
 	src/macro.h \
 	src/mempool.c \
 	src/mempool.h \
@@ -162,7 +154,6 @@ libutils_la_SOURCES = \
 	src/siphash24.h \
 	src/socket-util.c \
 	src/socket-util.h \
-	src/special.h \
 	src/stdio-util.h \
 	src/string-table.c \
 	src/string-table.h \
@@ -176,19 +167,13 @@ libutils_la_SOURCES = \
 	src/terminal-util.h \
 	src/time-util.c \
 	src/time-util.h \
-	src/umask-util.h \
 	src/unaligned.h \
-	src/unit.h \
-	src/unit-name.c \
-	src/unit-name.h \
 	src/user-util.c \
 	src/user-util.h \
 	src/utf8.c \
 	src/utf8.h \
 	src/util.c \
-	src/util.h \
-	src/virt.c \
-	src/virt.h
+	src/util.h
 
 libutils_la_CFLAGS = \
 	$(AM_CFLAGS) \

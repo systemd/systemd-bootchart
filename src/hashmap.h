@@ -26,7 +26,6 @@
 
 #include "hash-funcs.h"
 #include "macro.h"
-#include "util.h"
 
 /*
  * A hash table implementation. As a minor optimization a NULL hashmap object

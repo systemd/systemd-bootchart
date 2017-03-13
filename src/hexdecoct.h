@@ -19,11 +19,6 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <sys/types.h>
-
 #include "macro.h"
 
 char hexchar(int x) _const_;

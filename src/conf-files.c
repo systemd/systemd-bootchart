@@ -19,7 +19,6 @@
 
 #include <dirent.h>
 #include <errno.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,10 +26,10 @@
 #include "conf-files.h"
 #include "dirent-util.h"
 #include "fd-util.h"
+#include "hash-funcs.h"
 #include "hashmap.h"
 #include "log.h"
 #include "macro.h"
-#include "missing.h"
 #include "path-util.h"
 #include "string-util.h"
 #include "strv.h"

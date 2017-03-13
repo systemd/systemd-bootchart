@@ -24,7 +24,6 @@
 #include <stddef.h>
 
 #include "macro.h"
-#include "time-util.h"
 
 #define DEFAULT_PATH_NORMAL "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
 #define DEFAULT_PATH_SPLIT_USR DEFAULT_PATH_NORMAL ":/sbin:/bin"

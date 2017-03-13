@@ -18,6 +18,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
+#include <stdint.h>
 #include <string.h>
 
 #include "hash-funcs.h"

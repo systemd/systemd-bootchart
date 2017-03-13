@@ -19,16 +19,9 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <dirent.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <sys/types.h>
-
-#include "def.h"
-#include "hashmap.h"
-#include "macro.h"
-#include "set.h"
 
 /* Special values for the cpu.shares attribute */
 #define CGROUP_CPU_SHARES_INVALID ((uint64_t) -1)

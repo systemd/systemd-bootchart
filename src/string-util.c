@@ -17,17 +17,13 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <errno.h>
 #include <stdarg.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "alloc-util.h"
-#include "gunicode.h"
 #include "macro.h"
 #include "string-util.h"
-#include "utf8.h"
 #include "util.h"
 
 int strcmp_ptr(const char *a, const char *b) {

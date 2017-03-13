@@ -17,15 +17,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <ctype.h>
-#include <errno.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-#include "alloc-util.h"
 #include "hexdecoct.h"
-#include "macro.h"
-#include "util.h"
 
 char hexchar(int x) {
         static const char table[16] = "0123456789abcdef";

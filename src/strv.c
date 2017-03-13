@@ -25,8 +25,6 @@
 #include <string.h>
 
 #include "alloc-util.h"
-#include "escape.h"
-#include "fileio.h"
 #include "string-util.h"
 #include "strv.h"
 #include "util.h"

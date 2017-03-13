@@ -22,7 +22,6 @@
 #include <alloca.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "macro.h"
 

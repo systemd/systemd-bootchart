@@ -20,12 +20,10 @@
 #include <errno.h>
 #include <limits.h>
 #include <poll.h>
-#include <stdio.h>
 #include <time.h>
 #include <unistd.h>
 
 #include "io-util.h"
-#include "log.h"
 #include "time-util.h"
 
 ssize_t loop_read(int fd, void *buf, size_t nbytes, bool do_poll) {

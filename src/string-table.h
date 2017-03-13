@@ -22,13 +22,9 @@
 
 #include <errno.h>
 #include <stddef.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/types.h>
 
 #include "macro.h"
-#include "parse-util.h"
-#include "string-util.h"
 
 ssize_t string_table_lookup(const char * const *table, size_t len, const char *key);
 
