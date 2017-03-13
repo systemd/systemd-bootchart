@@ -21,13 +21,8 @@
 
 #include <fcntl.h>
 #include <limits.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <sys/inotify.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#include "time-util.h"
 
 int fd_warn_permissions(const char *path, int fd);
 

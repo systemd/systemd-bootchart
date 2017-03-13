@@ -42,7 +42,6 @@
 #include "fileio.h"
 #include "formats-util.h"
 #include "hashmap.h"
-#include "hostname-util.h"
 #include "log.h"
 #include "macro.h"
 #include "missing.h"

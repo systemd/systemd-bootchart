@@ -19,14 +19,13 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <fnmatch.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 
 #include "alloc-util.h"
+#include "log.h"
 #include "macro.h"
-#include "util.h"
 
 char *strv_find(char **l, const char *name) _pure_;
 char *strv_find_prefix(char **l, const char *name) _pure_;

@@ -19,11 +19,9 @@
 
 #include <errno.h>
 #include <limits.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 
 #include "alloc-util.h"
 #include "conf-files.h"
@@ -34,11 +32,9 @@
 #include "macro.h"
 #include "parse-util.h"
 #include "path-util.h"
-#include "process-util.h"
 #include "string-util.h"
 #include "strv.h"
 //#include "syslog-util.h"
-#include "time-util.h"
 #include "utf8.h"
 
 int config_item_table_lookup(

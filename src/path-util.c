@@ -18,28 +18,14 @@
 ***/
 
 #include <errno.h>
-#include <limits.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-/* When we include libgen.h because we need dirname() we immediately
- * undefine basename() since libgen.h defines it as a macro to the
- * POSIX version which is really broken. We prefer GNU basename(). */
-#include <libgen.h>
-#undef basename
 
 #include "alloc-util.h"
-#include "fs-util.h"
-#include "log.h"
 #include "macro.h"
-#include "missing.h"
 #include "path-util.h"
 #include "string-util.h"
 #include "strv.h"
-#include "time-util.h"
 
 bool path_is_absolute(const char *p) {
         return p[0] == '/';

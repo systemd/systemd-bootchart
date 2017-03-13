@@ -18,14 +18,11 @@
 ***/
 
 #include <errno.h>
-#include <inttypes.h>
 #include <locale.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <xlocale.h>
 
-#include "alloc-util.h"
 #include "macro.h"
 #include "parse-util.h"
 #include "string-util.h"

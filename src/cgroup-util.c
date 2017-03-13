@@ -17,41 +17,21 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <dirent.h>
 #include <errno.h>
-#include <ftw.h>
 #include <limits.h>
-#include <signal.h>
-#include <stddef.h>
-#include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <sys/statfs.h>
 #include <sys/types.h>
-#include <unistd.h>
 
-#include "alloc-util.h"
 #include "cgroup-util.h"
 #include "def.h"
-#include "dirent-util.h"
 #include "fd-util.h"
 #include "fileio.h"
-#include "formats-util.h"
-#include "fs-util.h"
-#include "log.h"
-#include "login-util.h"
 #include "macro.h"
 #include "missing.h"
 #include "parse-util.h"
-#include "path-util.h"
 #include "process-util.h"
-#include "set.h"
-#include "special.h"
-#include "stdio-util.h"
-#include "string-table.h"
 #include "string-util.h"
-#include "unit-name.h"
-#include "user-util.h"
 
 #define F_TYPE_EQUAL(a, b) (a == (typeof(a)) b)
 

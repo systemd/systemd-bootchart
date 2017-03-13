@@ -19,14 +19,10 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <dirent.h>
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <sys/types.h>
 
 #include "macro.h"
-#include "time-util.h"
 
 typedef enum {
         WRITE_STRING_FILE_CREATE = 1,

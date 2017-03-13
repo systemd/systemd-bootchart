@@ -19,7 +19,6 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <netinet/ether.h>
 #include <netinet/in.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -30,7 +29,6 @@
 #include <linux/if_packet.h>
 
 #include "macro.h"
-#include "util.h"
 
 union sockaddr_union {
         struct sockaddr sa;
