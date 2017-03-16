@@ -29,8 +29,5 @@ bool dirent_is_file_with_suffix(const struct dirent *de, const char *suffix) {
             de->d_type != DT_UNKNOWN)
                 return false;
 
-        if (hidden_file_allow_backup(de->d_name))
-                return false;
-
         return endswith(de->d_name, suffix);
 }

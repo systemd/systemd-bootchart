@@ -80,6 +80,3 @@ char** path_strv_resolve_uniq(char **l, const char *prefix);
         })
 
 char *file_in_same_dir(const char *path, const char *filename);
-
-bool hidden_file_allow_backup(const char *filename);
-bool hidden_file(const char *filename) _pure_;
