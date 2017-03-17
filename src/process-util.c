@@ -33,7 +33,6 @@
 #include "macro.h"
 #include "missing.h"
 #include "process-util.h"
-#include "string-table.h"
 
 int getenv_for_pid(pid_t pid, const char *field, char **_value) {
         _cleanup_fclose_ FILE *f = NULL;
@@ -100,14 +99,3 @@ bool is_main_thread(void) {
 
         return cached > 0;
 }
-
-static const char *const sigchld_code_table[] = {
-        [CLD_EXITED] = "exited",
-        [CLD_KILLED] = "killed",
-        [CLD_DUMPED] = "dumped",
-        [CLD_TRAPPED] = "trapped",
-        [CLD_STOPPED] = "stopped",
-        [CLD_CONTINUED] = "continued",
-};
-
-DEFINE_STRING_TABLE_LOOKUP(sigchld_code, int);
