@@ -152,8 +152,6 @@ libutils_la_SOURCES = \
 	src/siphash24.c \
 	src/siphash24.h \
 	src/stdio-util.h \
-	src/string-table.c \
-	src/string-table.h \
 	src/string-util.c \
 	src/string-util.h \
 	src/strv.c \
