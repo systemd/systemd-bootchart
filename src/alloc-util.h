@@ -23,7 +23,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "macro.h"
+#include "attributes.h"
 
 #define new(t, n) ((t*) malloc_multiply(sizeof(t), (n)))
 

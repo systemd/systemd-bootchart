@@ -18,7 +18,7 @@
 ***/
 
 #include "dirent-util.h"
-#include "path-util.h"
+#include "macro.h"
 #include "string-util.h"
 
 bool dirent_is_file_with_suffix(const struct dirent *de, const char *suffix) {

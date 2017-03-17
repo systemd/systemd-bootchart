@@ -24,7 +24,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "log.h"
+#include "attributes.h"
 #include "macro.h"
 
 /* What is interpreted as whitespace? */

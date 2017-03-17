@@ -31,6 +31,7 @@
 
  ***/
 
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
@@ -41,6 +42,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/resource.h>
+#include <sys/uio.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -54,6 +56,7 @@
 #include "fileio.h"
 #include "io-util.h"
 #include "list.h"
+#include "log.h"
 #include "macro.h"
 #include "parse-util.h"
 #include "path-util.h"
@@ -61,7 +64,7 @@
 #include "string-util.h"
 #include "strxcpyx.h"
 #include "svg.h"
-#include "util.h"
+#include "time-util.h"
 
 static int exiting = 0;
 

@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "attributes.h"
+
 typedef uint64_t usec_t;
 typedef uint64_t nsec_t;
 

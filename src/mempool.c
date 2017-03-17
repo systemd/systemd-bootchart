@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "attributes.h"
 #include "macro.h"
 #include "mempool.h"
 #include "util.h"

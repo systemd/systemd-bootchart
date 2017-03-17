@@ -17,42 +17,12 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <alloca.h>
-#include <dirent.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <sched.h>
-#include <signal.h>
-#include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/mman.h>
-#include <sys/prctl.h>
-#include <sys/statfs.h>
-#include <sys/sysmacros.h>
-#include <sys/types.h>
 #include <unistd.h>
 
-#include "alloc-util.h"
 #include "build.h"
-#include "def.h"
-#include "dirent-util.h"
-#include "fd-util.h"
-#include "fileio.h"
-#include "formats-util.h"
-#include "hashmap.h"
-#include "log.h"
 #include "macro.h"
-#include "missing.h"
-#include "parse-util.h"
-#include "path-util.h"
-#include "process-util.h"
-#include "set.h"
-#include "string-util.h"
-#include "strv.h"
-#include "time-util.h"
-#include "user-util.h"
 #include "util.h"
 
 /* Put this test here for a lack of better place */

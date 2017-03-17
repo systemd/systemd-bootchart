@@ -22,7 +22,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "macro.h"
+#include "attributes.h"
 
 typedef enum {
         WRITE_STRING_FILE_CREATE = 1,
