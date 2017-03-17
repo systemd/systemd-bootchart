@@ -17,7 +17,6 @@
     coding style)
 */
 
-#include "log.h"
 #include "macro.h"
 #include "siphash24.h"
 #include "unaligned.h"

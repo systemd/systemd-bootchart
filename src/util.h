@@ -19,32 +19,15 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <alloca.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <inttypes.h>
-#include <limits.h>
-#include <locale.h>
-#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/inotify.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/statfs.h>
-#include <sys/types.h>
-#include <time.h>
-#include <unistd.h>
 
-#include "formats-util.h"
-#include "log.h"
+#include "attributes.h"
 #include "macro.h"
-#include "missing.h"
-#include "time-util.h"
 
 size_t page_size(void) _pure_;
 #define PAGE_ALIGN(l) ALIGN_TO((l), page_size())

@@ -20,9 +20,10 @@
 ***/
 
 #include <limits.h>
-#include <stddef.h>
 #include <stdint.h>
+#include <sys/types.h>
 
+#include "attributes.h"
 #include "macro.h"
 
 #define MODE_INVALID ((mode_t) -1)

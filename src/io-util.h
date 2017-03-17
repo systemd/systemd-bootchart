@@ -25,7 +25,7 @@
 #include <sys/types.h>
 #include <sys/uio.h>
 
-#include "log.h"
+#include "attributes.h"
 #include "macro.h"
 #include "time-util.h"
 

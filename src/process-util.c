@@ -30,7 +30,6 @@
 #endif
 
 #include "fd-util.h"
-#include "log.h"
 #include "macro.h"
 #include "missing.h"
 #include "process-util.h"

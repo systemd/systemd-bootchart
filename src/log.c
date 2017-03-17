@@ -21,29 +21,22 @@
 #include <fcntl.h>
 #include <limits.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/socket.h>
-#include <sys/time.h>
 #include <sys/uio.h>
-#include <time.h>
 #include <unistd.h>
 
 #include "sd-messages.h"
 
-#include "alloc-util.h"
 #include "fd-util.h"
-#include "formats-util.h"
 #include "io-util.h"
 #include "log.h"
 #include "macro.h"
-#include "parse-util.h"
 #include "stdio-util.h"
-#include "string-table.h"
 #include "string-util.h"
 #include "terminal-util.h"
-#include "time-util.h"
 #include "util.h"
 
 #define SNDBUF_SIZE (8*1024*1024)

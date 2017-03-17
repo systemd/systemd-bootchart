@@ -19,39 +19,15 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <limits.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/inotify.h>
-#include <sys/socket.h>
-#include <sys/sysmacros.h>
-#include <sys/time.h>
-#include <linux/kd.h>
-#include <linux/tiocl.h>
-#include <linux/vt.h>
-#include <poll.h>
 #include <signal.h>
+#include <stdio.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>
-#include <termios.h>
 #include <unistd.h>
 
-#include "alloc-util.h"
 #include "fd-util.h"
-#include "fileio.h"
-#include "fs-util.h"
-#include "io-util.h"
-#include "log.h"
 #include "macro.h"
-#include "parse-util.h"
-#include "process-util.h"
-#include "socket-util.h"
-#include "string-util.h"
 #include "terminal-util.h"
 #include "time-util.h"
-#include "util.h"
 
 static volatile unsigned cached_columns = 0;
 static volatile unsigned cached_lines = 0;
