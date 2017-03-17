@@ -21,17 +21,15 @@
 
 #include <errno.h>
 #include <stdarg.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <syslog.h>
-#include <sys/uio.h>
 
 #include <systemd/sd-id128.h>
 
 #include "alloc-util.h"
-#include "macro.h"
+#include "attributes.h"
 
-int log_get_max_level(void);
+int log_get_max_level(void) _pure_;
 
 int log_internal(
                 int level,
