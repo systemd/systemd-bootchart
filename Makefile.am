@@ -129,8 +129,6 @@ libutils_la_SOURCES = \
 	src/hash-funcs.h \
 	src/hashmap.c \
 	src/hashmap.h \
-	src/hexdecoct.c \
-	src/hexdecoct.h \
 	src/io-util.c \
 	src/io-util.h \
 	src/list.h \

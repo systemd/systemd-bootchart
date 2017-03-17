@@ -47,7 +47,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hexdecoct.h"
 #include "macro.h"
 #include "utf8.h"
 
@@ -63,6 +62,12 @@ bool unichar_is_valid(char32_t ch) {
                 return false;
 
         return true;
+}
+
+static char hexchar(int x) {
+        static const char table[16] = "0123456789abcdef";
+
+        return table[x & 15];
 }
 
 static bool unichar_is_control(char32_t ch) {
