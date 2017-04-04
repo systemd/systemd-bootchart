@@ -66,10 +66,11 @@ struct list_sample_data {
 
 /* process info */
 struct ps_struct {
-        struct ps_struct *next_ps;    /* SLL pointer */
-        struct ps_struct *parent;     /* ppid ref */
-        struct ps_struct *children;   /* children */
-        struct ps_struct *next;       /* siblings */
+        struct ps_struct *next_ps;      /* SLL pointer */
+        struct ps_struct *next_running; /* currently running */
+        struct ps_struct *parent;       /* ppid ref */
+        struct ps_struct *children;     /* children */
+        struct ps_struct *next;         /* siblings */
 
         /* must match - otherwise it's a new process with same PID */
         char name[256];
@@ -81,6 +82,9 @@ struct ps_struct {
         int sched;
         int schedstat;
         FILE *smaps;
+
+        /* used to garbage collect running process list*/
+        bool still_running;
 
         /* pointers to first/last seen timestamps */
         struct ps_sched_struct *first;
