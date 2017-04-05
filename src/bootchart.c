@@ -326,6 +326,7 @@ int main(int argc, char *argv[]) {
         struct sigaction sig = {
                 .sa_handler = signal_handler,
         };
+        bool has_procfs = false;
 
         parse_conf();
 
@@ -387,6 +388,8 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
         }
 
+        has_procfs = access("/proc/vmstat", F_OK) == 0;
+
         LIST_HEAD_INIT(head);
 
         /* main program loop */
@@ -413,12 +416,15 @@ int main(int argc, char *argv[]) {
                                 parse_env_file("/usr/lib/os-release", NEWLINE, "PRETTY_NAME", &build, NULL);
                 }
 
-                if (proc)
+                if (!has_procfs) {
+                        /* wait for /proc to become available, discarding samples */
+                        has_procfs = access("/proc/vmstat", F_OK) == 0;
+                } else if (proc) {
                         rewinddir(proc);
-                else
+                } else {
                         proc = opendir("/proc");
+                }
 
-                /* wait for /proc to become available, discarding samples */
                 if (proc) {
                         r = log_sample(proc, samples, ps_first, &sampledata, &pscount, &n_cpus);
                         if (r < 0)
