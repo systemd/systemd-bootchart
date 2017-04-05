@@ -158,6 +158,12 @@
         </para></listitem>
       </varlistentry>
 
+      <varlistentry>
+        <term><varname>Cmdline=no</varname></term>
+        <listitem><para>Display the full command line of each process.
+        </para></listitem>
+      </varlistentry>
+
     </variablelist>
   </refsect1>
 

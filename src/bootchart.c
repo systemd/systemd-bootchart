@@ -112,6 +112,7 @@ static void parse_conf(void) {
                 { "Bootchart", "ScaleY",           config_parse_double, 0, &arg_scale_y     },
                 { "Bootchart", "ControlGroup",     config_parse_bool,   0, &arg_show_cgroup },
                 { "Bootchart", "PerCPU",           config_parse_bool,   0, &arg_percpu      },
+                { "Bootchart", "Cmdline",          config_parse_bool,   0, &arg_show_cmdline},
                 { NULL, NULL, NULL, 0, NULL }
         };
 
