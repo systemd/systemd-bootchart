@@ -24,7 +24,7 @@
 #include <stddef.h>
 
 #include "alloc-util.h"
-#include "log.h"
+#include "attributes.h"
 #include "macro.h"
 
 char *strv_find(char **l, const char *name) _pure_;

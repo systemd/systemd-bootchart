@@ -19,10 +19,12 @@
 
 #include <errno.h>
 #include <limits.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/statfs.h>
 #include <sys/types.h>
 
+#include "attributes.h"
 #include "cgroup-util.h"
 #include "def.h"
 #include "fd-util.h"

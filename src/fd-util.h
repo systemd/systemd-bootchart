@@ -23,6 +23,7 @@
 #include <errno.h>
 #include <stdio.h>
 
+#include "attributes.h"
 #include "macro.h"
 
 /* Make sure we can distinguish fd 0 and NULL */

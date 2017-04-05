@@ -24,6 +24,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "attributes.h"
 #include "hash-funcs.h"
 #include "macro.h"
 

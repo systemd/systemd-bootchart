@@ -107,6 +107,7 @@ libutils_la_SOURCES = \
 	src/alloc-util.c \
 	src/alloc-util.h \
 	src/architecture.h \
+	src/attributes.h \
 	src/build.h \
 	src/cgroup-util.c \
 	src/cgroup-util.h \
@@ -128,8 +129,6 @@ libutils_la_SOURCES = \
 	src/hash-funcs.h \
 	src/hashmap.c \
 	src/hashmap.h \
-	src/hexdecoct.c \
-	src/hexdecoct.h \
 	src/io-util.c \
 	src/io-util.h \
 	src/list.h \
@@ -152,11 +151,7 @@ libutils_la_SOURCES = \
 	src/set.h \
 	src/siphash24.c \
 	src/siphash24.h \
-	src/socket-util.c \
-	src/socket-util.h \
 	src/stdio-util.h \
-	src/string-table.c \
-	src/string-table.h \
 	src/string-util.c \
 	src/string-util.h \
 	src/strv.c \
@@ -168,8 +163,6 @@ libutils_la_SOURCES = \
 	src/time-util.c \
 	src/time-util.h \
 	src/unaligned.h \
-	src/user-util.c \
-	src/user-util.h \
 	src/utf8.c \
 	src/utf8.h \
 	src/util.c \

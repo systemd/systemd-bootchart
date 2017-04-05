@@ -21,53 +21,15 @@
 
 #include <errno.h>
 #include <stdarg.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <syslog.h>
-#include <sys/uio.h>
 
 #include <systemd/sd-id128.h>
 
 #include "alloc-util.h"
-#include "macro.h"
+#include "attributes.h"
 
-typedef enum LogTarget{
-        LOG_TARGET_CONSOLE,
-        LOG_TARGET_CONSOLE_PREFIXED,
-        LOG_TARGET_KMSG,
-        LOG_TARGET_JOURNAL,
-        LOG_TARGET_JOURNAL_OR_KMSG,
-        LOG_TARGET_SYSLOG,
-        LOG_TARGET_SYSLOG_OR_KMSG,
-        LOG_TARGET_AUTO, /* console if stderr is tty, JOURNAL_OR_KMSG otherwise */
-        LOG_TARGET_SAFE, /* console if stderr is tty, KMSG otherwise */
-        LOG_TARGET_NULL,
-        _LOG_TARGET_MAX,
-        _LOG_TARGET_INVALID = -1
-}  LogTarget;
-
-void log_set_target(LogTarget target);
-void log_set_max_level(int level);
-void log_set_facility(int facility);
-
-void log_show_color(bool b);
-bool log_get_show_color(void) _pure_;
-void log_show_location(bool b);
-bool log_get_show_location(void) _pure_;
-
-int log_show_color_from_string(const char *e);
-int log_show_location_from_string(const char *e);
-
-LogTarget log_get_target(void) _pure_;
 int log_get_max_level(void) _pure_;
-
-void log_close(void);
-void log_forget_fds(void);
-
-void log_close_syslog(void);
-void log_close_journal(void);
-void log_close_kmsg(void);
-void log_close_console(void);
 
 int log_internal(
                 int level,
@@ -86,27 +48,6 @@ int log_internalv(
                 const char *format,
                 va_list ap) _printf_(6,0);
 
-int log_object_internal(
-                int level,
-                int error,
-                const char *file,
-                int line,
-                const char *func,
-                const char *object_field,
-                const char *object,
-                const char *format, ...) _printf_(8,9);
-
-int log_object_internalv(
-                int level,
-                int error,
-                const char*file,
-                int line,
-                const char *func,
-                const char *object_field,
-                const char *object,
-                const char *format,
-                va_list ap) _printf_(8,0);
-
 int log_struct_internal(
                 int level,
                 int error,
@@ -119,24 +60,6 @@ int log_oom_internal(
                 const char *file,
                 int line,
                 const char *func);
-
-int log_format_iovec(
-                struct iovec *iovec,
-                unsigned iovec_len,
-                unsigned *n,
-                bool newline_separator,
-                int error,
-                const char *format,
-                va_list ap);
-
-/* This modifies the buffer passed! */
-int log_dump_internal(
-                int level,
-                int error,
-                const char *file,
-                int line,
-                const char *func,
-                char *buffer);
 
 /* Logging for various assertions */
 noreturn void log_assert_failed(
@@ -190,19 +113,7 @@ void log_assert_failed_return(
 #  define log_trace(...) do {} while(0)
 #endif
 
-/* Structured logging */
-#define log_struct(level, ...) log_struct_internal(level, 0, __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define log_struct_errno(level, error, ...) log_struct_internal(level, error, __FILE__, __LINE__, __func__, __VA_ARGS__)
-
-/* This modifies the buffer passed! */
-#define log_dump(level, buffer) log_dump_internal(level, 0, __FILE__, __LINE__, __func__, buffer)
-
 #define log_oom() log_oom_internal(__FILE__, __LINE__, __func__)
-
-bool log_on_console(void) _pure_;
-
-const char *log_target_to_string(LogTarget target) _const_;
-LogTarget log_target_from_string(const char *s) _pure_;
 
 /* Helpers to prepare various fields for structured logging */
 #define LOG_MESSAGE(fmt, ...) "MESSAGE=" fmt, ##__VA_ARGS__

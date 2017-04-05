@@ -22,7 +22,9 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
+#include <limits.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "list.h"
 
@@ -33,12 +35,6 @@ struct block_stat_struct {
         /* /proc/vmstat pgpgin & pgpgout */
         int bi;
         int bo;
-};
-
-struct cpu_stat_sample_struct {
-        /* /proc/schedstat fields 10 & 11 (after name) */
-        double runtime;
-        double waittime;
 };
 
 /* per process, per sample data we will log */

@@ -21,10 +21,10 @@
 
 #include <alloca.h>
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <sys/types.h>
 
+#include "attributes.h"
 #include "formats-util.h"
 #include "macro.h"
 

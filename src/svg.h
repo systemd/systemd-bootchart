@@ -22,6 +22,9 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
+#include <stdio.h>
+#include <bootchart.h>
+
 int svg_do(FILE *of,
            const char *build,
            struct list_sample_data *head,

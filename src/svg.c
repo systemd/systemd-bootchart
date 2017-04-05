@@ -20,8 +20,8 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#include <fcntl.h>
-#include <limits.h>
+#include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/utsname.h>
@@ -34,12 +34,11 @@
 #include "fd-util.h"
 #include "fileio.h"
 #include "list.h"
+#include "log.h"
 #include "macro.h"
 #include "stdio-util.h"
-#include "store.h"
 #include "svg.h"
 #include "utf8.h"
-#include "util.h"
 
 #define time_to_graph(t) ((t) * arg_scale_x)
 #define ps_to_graph(n) ((n) * arg_scale_y)

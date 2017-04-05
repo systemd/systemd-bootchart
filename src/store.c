@@ -21,6 +21,7 @@
  ***/
 
 #include <dirent.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <stdio.h>
@@ -36,12 +37,13 @@
 #include "dirent-util.h"
 #include "fd-util.h"
 #include "fileio.h"
+#include "formats-util.h"
+#include "log.h"
 #include "parse-util.h"
 #include "store.h"
 #include "string-util.h"
 #include "strxcpyx.h"
 #include "time-util.h"
-#include "util.h"
 
 /*
  * Alloc a static 4k buffer for stdio - primarily used to increase
