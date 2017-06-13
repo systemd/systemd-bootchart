@@ -1179,6 +1179,8 @@ static void svg_ps_bars(FILE *of,
                 if (ps->pid == pid)
                         break;
         }
+        if (!ps)
+                ps = ps_first;
 
         /* need to know last node first */
         ps->sample = ps->first;
