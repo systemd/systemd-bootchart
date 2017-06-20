@@ -578,16 +578,10 @@ static void svg_io_bi_bar(FILE *of,
                         stop_sampledata = stop_sampledata->link_prev;
 
                 tot = (double)(stop_sampledata->blockstat.bi - start_sampledata->blockstat.bi) / diff;
-
                 if (tot > max) {
                         max = tot;
                         max_here = i;
                 }
-
-                tot = (double)(stop_sampledata->blockstat.bo - start_sampledata->blockstat.bo) / diff;
-
-                if (tot > max)
-                        max = tot;
 
                 i++;
         }
@@ -689,10 +683,6 @@ static void svg_io_bo_bar(FILE *of,
 
                 for (k = 0; k < (range/2) && stop_sampledata->link_prev; k++)
                         stop_sampledata = stop_sampledata->link_prev;
-
-                tot = (double)(stop_sampledata->blockstat.bi - start_sampledata->blockstat.bi) / diff;
-                if (tot > max)
-                        max = tot;
 
                 tot = (double)(stop_sampledata->blockstat.bo - start_sampledata->blockstat.bo) / diff;
                 if (tot > max) {
