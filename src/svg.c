@@ -84,7 +84,7 @@ static void svg_header(FILE *of, struct list_sample_data *head, double graph_sta
         }
 
         /* min width is about 1600px due to the label */
-        w = 150.0 + 10.0 + time_to_graph(sampledata_last->sampletime - graph_start);
+        w = 150.0 + 10.0 + time_to_graph(sampledata_last->sampletime - graph_start) + 500;
         w = ((w < 1600.0) ? 1600.0 : w);
 
         /* height is variable based on pss, psize, ksize */
