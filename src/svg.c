@@ -242,7 +242,10 @@ static void svg_graph_box(FILE *of, struct list_sample_data *head, int height, d
                 ps_to_graph(height));
 
         for (d = graph_start; d <= finalsample;
-             d += (arg_scale_x < 2.0 ? 60.0 : arg_scale_x < 10.0 ? 1.0 : 0.01)) {
+             d += (arg_scale_x < 5.0 ? 10.0 :
+                   arg_scale_x < 50.0 ? 1.0 :
+                   arg_scale_x < 500.0 ? 0.1 :
+                   0.01)) {
                 /* lines for each second */
                 if (i % 50 == 0)
                         fprintf(of, "  <line class=\"sec5\" x1=\"%.03f\" y1=\"0\" x2=\"%.03f\" y2=\"%.03f\" />\n",
