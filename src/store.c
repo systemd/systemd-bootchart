@@ -366,17 +366,15 @@ no_sched:
 
                         ps->parent = parent;
 
-                        if (!parent->children) {
-                                /* it's the first child */
-                                parent->children = ps;
-                        } else {
-                                /* walk all children and append */
-                                struct ps_struct *children;
-                                children = parent->children;
-                                while (children->next)
-                                        children = children->next;
-
-                                children->next = ps;
+                        /*
+                         * append ourselves to the list of children
+                         * TODO: consider if prepending is OK for efficiency here.
+                         */
+                        {
+                                struct ps_struct **children = &parent->children;
+                                while (*children)
+                                        children = &(*children)->next;
+                                *children = ps;
                         }
                 }
 
