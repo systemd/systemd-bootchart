@@ -106,8 +106,10 @@ static void garbage_collect_dead_processes(struct ps_struct *ps_first) {
                         /* close the stream and fds */
                         ps_next->schedstat = safe_close(ps_next->schedstat);
                         ps_next->sched = safe_close(ps_next->sched);
-                        if (ps->smaps)
-                                fclose(ps->smaps);
+                        if (ps_next->smaps) {
+                                fclose(ps_next->smaps);
+                                ps_next->smaps = NULL;
+                        }
 
                         ps->next_running = ps_next->next_running;
                 } else {
