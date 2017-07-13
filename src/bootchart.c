@@ -505,7 +505,7 @@ int main(int argc, char *argv[]) {
 
         /* nitpic cleanups */
         ps = ps_first->next_ps;
-        while (ps->next_ps) {
+        while (ps) {
                 struct ps_struct *old;
 
                 old = ps;
@@ -522,9 +522,6 @@ int main(int argc, char *argv[]) {
                 free(old);
         }
 
-        free(ps->cgroup);
-        free(ps->sample);
-        free(ps);
         free(ps_first);
 
         sampledata = head;
