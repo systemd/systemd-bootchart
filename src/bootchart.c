@@ -525,6 +525,7 @@ int main(int argc, char *argv[]) {
         free(ps->cgroup);
         free(ps->sample);
         free(ps);
+        free(ps_first);
 
         sampledata = head;
         while (sampledata->link_prev) {
