@@ -258,11 +258,19 @@ schedstat_next:
                         char t[32];
                         struct ps_struct *parent;
 
-                        ps->next_ps = ps->next_running = new0(struct ps_struct, 1);
-                        if (!ps->next_ps)
+                        /* find the insertion point for the last item */
+                        struct ps_struct **ps_next = &ps->next_ps;
+                        while (*ps_next) {
+                                ps_next = &(*ps_next)->next_ps;
+                        }
+
+                        assert(!*ps_next);
+                        assert(!ps->next_running);
+                        *ps_next = ps->next_running = new0(struct ps_struct, 1);
+                        if (!*ps_next)
                                 return log_oom();
 
-                        ps = ps->next_ps;
+                        ps = *ps_next;
                         ps->pid = pid;
                         ps->sched = -1;
                         ps->schedstat = -1;
