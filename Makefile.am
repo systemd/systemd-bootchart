@@ -192,6 +192,8 @@ systemd_bootchart_LDADD = \
 
 #####################################################
 
+TESTS = tests/run
+
 substitutions = \
 	'|rootlibexecdir=$(rootlibexecdir)|'
 

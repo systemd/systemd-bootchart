@@ -1,0 +1,33 @@
+#! /bin/sh
+d=
+cleanup() {
+        if [ -n "$d" ]; then
+                d=
+                rm -rf "$d"
+        fi
+}
+trap cleanup EXIT
+d=`mktemp -d`
+
+test_runs=0
+test_failures=0
+
+t() {
+        "$@"
+        local r=$?
+        : $((test_runs=test_runs+1))
+        if [ $r -ne 0 ]; then
+                : $((test_failures=test_failures+1))
+                echo "not ok $test_runs - $*"
+        fi
+}
+
+echo 1..3
+t ./systemd-bootchart -o "$d" -n 2 -r
+t ./systemd-bootchart -o "$d" -n 10 -r
+t ./systemd-bootchart -o "$d" -n 10 -r -p
+
+if [ $test_failures -ne 0 ]; then
+        echo "# Failed $test_failures out of $test_runs tests"
+        exit 1
+fi
