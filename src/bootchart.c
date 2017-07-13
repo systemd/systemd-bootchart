@@ -525,9 +525,9 @@ int main(int argc, char *argv[]) {
         free(ps_first);
 
         sampledata = head;
-        while (sampledata->link_prev) {
+        while (sampledata->link_next) {
                 struct list_sample_data *old_sampledata = sampledata;
-                sampledata = sampledata->link_prev;
+                sampledata = sampledata->link_next;
                 free(old_sampledata);
         }
         free(sampledata);
