@@ -176,7 +176,7 @@ AC_SUBST([rootprefix], [$with_rootprefix])
 AC_SUBST([rootlibdir], [$with_rootlibdir])
 
 AC_ARG_ENABLE([man],
-        AS_HELP_STRING([--diable-man],[Build the man pages (default: yes)]),
+        AS_HELP_STRING([--disable-man],[Build the man pages (default: yes)]),
         [build_man=$enableval],
         [build_man=yes])
 
