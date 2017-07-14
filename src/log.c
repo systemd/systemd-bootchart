@@ -323,7 +323,9 @@ int log_syntax_internal(
         r = log_struct_internal(
                         level, error,
                         file, line, func,
+#ifdef HAVE_LIBSYSTEMD
                         LOG_MESSAGE_ID(SD_MESSAGE_INVALID_CONFIGURATION),
+#endif
                         "CONFIG_FILE=%s", config_file,
                         "CONFIG_LINE=%u", config_line,
                         LOG_MESSAGE("[%s:%u] %s", config_file, config_line, buffer),
