@@ -24,8 +24,6 @@
 #include <stdlib.h>
 #include <syslog.h>
 
-#include <systemd/sd-id128.h>
-
 #include "alloc-util.h"
 #include "attributes.h"
 

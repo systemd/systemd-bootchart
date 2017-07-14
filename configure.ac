@@ -62,8 +62,16 @@ AC_CHECK_DECLS([gettid, getrandom], [], [], [[
 #include <linux/random.h>
 ]])
 
-PKG_CHECK_MODULES(LIBSYSTEMD, [libsystemd >= 221],
-	[], [AC_MSG_ERROR([*** libsystemd library not found])])
+AC_ARG_WITH(libsystemd,
+        AS_HELP_STRING([--without-libsystemd], [Disable use of libsystemd for journal output]),
+        [], [with_libsystemd=yes])
+
+AS_IF([test "x$with_libsystemd" != xno],
+        [PKG_CHECK_MODULES(LIBSYSTEMD, [libsystemd >= 221],
+                [AC_DEFINE([HAVE_LIBSYSTEMD],[1],[Define if you have libsystemd])],
+                [AC_MSG_ERROR([*** libsystemd library not found])]
+        )]
+)
 
 CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -pipe \

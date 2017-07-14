@@ -45,7 +45,9 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifdef HAVE_LIBSYSTEMD
 #include <systemd/sd-journal.h>
+#endif
 
 #include "alloc-util.h"
 #include "bootchart.h"
@@ -258,6 +260,7 @@ static int parse_argv(int argc, char *argv[]) {
 }
 
 static int do_journal_append(char *file) {
+#ifdef HAVE_LIBSYSTEMD
         _cleanup_free_ char *bootchart_message = NULL;
         _cleanup_free_ char *bootchart_file = NULL;
         _cleanup_free_ char *p = NULL;
@@ -301,6 +304,9 @@ static int do_journal_append(char *file) {
         if (r < 0)
                 log_error_errno(r, "Failed to send bootchart: %m");
 
+#else
+        (void)file;
+#endif
         return 0;
 }
 
