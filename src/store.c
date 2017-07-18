@@ -106,8 +106,10 @@ static void garbage_collect_dead_processes(struct ps_struct *ps_first) {
                         /* close the stream and fds */
                         ps_next->schedstat = safe_close(ps_next->schedstat);
                         ps_next->sched = safe_close(ps_next->sched);
-                        if (ps->smaps)
-                                fclose(ps->smaps);
+                        if (ps_next->smaps) {
+                                fclose(ps_next->smaps);
+                                ps_next->smaps = NULL;
+                        }
 
                         ps->next_running = ps_next->next_running;
                 } else {
@@ -256,11 +258,19 @@ schedstat_next:
                         char t[32];
                         struct ps_struct *parent;
 
-                        ps->next_ps = ps->next_running = new0(struct ps_struct, 1);
-                        if (!ps->next_ps)
+                        /* find the insertion point for the last item */
+                        struct ps_struct **ps_next = &ps->next_ps;
+                        while (*ps_next) {
+                                ps_next = &(*ps_next)->next_ps;
+                        }
+
+                        assert(!*ps_next);
+                        assert(!ps->next_running);
+                        *ps_next = ps->next_running = new0(struct ps_struct, 1);
+                        if (!*ps_next)
                                 return log_oom();
 
-                        ps = ps->next_ps;
+                        ps = *ps_next;
                         ps->pid = pid;
                         ps->sched = -1;
                         ps->schedstat = -1;
@@ -366,17 +376,15 @@ no_sched:
 
                         ps->parent = parent;
 
-                        if (!parent->children) {
-                                /* it's the first child */
-                                parent->children = ps;
-                        } else {
-                                /* walk all children and append */
-                                struct ps_struct *children;
-                                children = parent->children;
-                                while (children->next)
-                                        children = children->next;
-
-                                children->next = ps;
+                        /*
+                         * append ourselves to the list of children
+                         * TODO: consider if prepending is OK for efficiency here.
+                         */
+                        {
+                                struct ps_struct **children = &parent->children;
+                                while (*children)
+                                        children = &(*children)->next;
+                                *children = ps;
                         }
                 }
 
