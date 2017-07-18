@@ -21,7 +21,6 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
-#include <xlocale.h>
 
 #include "macro.h"
 #include "parse-util.h"
