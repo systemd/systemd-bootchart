@@ -69,7 +69,8 @@ EXTRA_DIST = \
 	man/custom-man.xsl \
 	man/standard-conf.xml \
 	man/standard-options.xml \
-	units/systemd-bootchart.service.in
+	units/systemd-bootchart.service.in \
+	tests/run
 
 MANPAGES = man/bootchart.conf.5 man/systemd-bootchart.1
 MANPAGES_ALIAS = man/bootchart.conf.d.5
