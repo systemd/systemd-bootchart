@@ -17,7 +17,7 @@
 AC_PREREQ([2.64])
 
 AC_INIT([systemd-bootchart],
-        [232],
+        [233],
         [http://github.com/systemd/systemd-bootchart/issues],
         [systemd-bootchart],
         [http://github.com/systemd/systemd-bootchart/])
@@ -151,8 +151,7 @@ CC_CHECK_FLAGS_APPEND([with_ldflags], [LDFLAGS], [\
         -Wl,--no-undefined \
         -Wl,-z,relro \
         -Wl,-z,now \
-        -pie \
-        -Wl,-fuse-ld=gold])
+        -pie])
 AC_SUBST([OUR_LDFLAGS], "$with_ldflags $sanitizer_ldflags")
 
 AC_ARG_WITH([rootprefix],
