@@ -63,7 +63,7 @@ char **path_strv_resolve(char **l, const char *prefix) {
                         t = *s;
 
                 errno = 0;
-                u = canonicalize_file_name(t);
+                u = realpath(t, NULL);
                 if (!u) {
                         if (errno == ENOENT) {
                                 if (prefix) {
