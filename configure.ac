@@ -73,6 +73,9 @@ AS_IF([test "x$with_libsystemd" != xno],
         )]
 )
 
+AC_CHECK_HEADERS([printf.h], [], [])
+AM_CONDITIONAL(HAVE_PRINTF_H, [test "x$ac_cv_header_print_h" = xyes])
+
 CC_CHECK_FLAGS_APPEND([with_cflags], [CFLAGS], [\
         -pipe \
         -Wall \

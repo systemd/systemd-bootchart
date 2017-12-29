@@ -19,7 +19,6 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include <printf.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <sys/types.h>

@@ -169,6 +169,10 @@ libutils_la_SOURCES = \
 	src/util.c \
 	src/util.h
 
+if !HAVE_PRINTF_H 
+libutils_la_SOURCES += src/parse-printf-format.c
+endif
+
 libutils_la_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(LIBSYSTEMD_CFLAGS)

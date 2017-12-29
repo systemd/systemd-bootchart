@@ -28,6 +28,7 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
+#include "parse-printf-format.h"
 #include "sd-messages.h"
 
 #include "fd-util.h"
