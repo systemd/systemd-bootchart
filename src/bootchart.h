@@ -28,8 +28,8 @@
 
 #include "list.h"
 
-#define MAXCPUS        16
-#define MAXPIDS     65535
+#define MAXCPUS        512
+#define MAXPIDS    4194304
 
 struct block_stat_struct {
         /* /proc/vmstat pgpgin & pgpgout */
