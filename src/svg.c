@@ -1184,7 +1184,8 @@ static void svg_ps_bars(FILE *of,
 
         /* need to know last node first */
         ps->sample = ps->first;
-        i = ps->sample->next->sampledata->counter;
+        if (ps->sample->next)
+                i = ps->sample->next->sampledata->counter;
 
         while (ps->sample->next && i<(n_samples-(arg_hz/2))) {
                 double crt;
