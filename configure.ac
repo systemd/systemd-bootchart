@@ -17,10 +17,10 @@
 AC_PREREQ([2.64])
 
 AC_INIT([systemd-bootchart],
-        [233],
-        [http://github.com/systemd/systemd-bootchart/issues],
+        [234],
+        [https://github.com/systemd/systemd-bootchart/issues],
         [systemd-bootchart],
-        [http://github.com/systemd/systemd-bootchart/])
+        [https://github.com/systemd/systemd-bootchart/])
 
 AC_CONFIG_SRCDIR([src/bootchart.c])
 AC_CONFIG_MACRO_DIR([m4])
