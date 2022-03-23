@@ -26,6 +26,8 @@ static inline pid_t gettid(void) {
 #    define __NR_getrandom 384
 # elif defined(__aarch64__)
 #    define __NR_getrandom 278
+# elif defined(__riscv)
+#    define __NR_getrandom 278
 #  elif defined(__ia64__)
 #    define __NR_getrandom 1339
 #  elif defined(__m68k__)
