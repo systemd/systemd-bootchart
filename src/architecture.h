@@ -57,6 +57,7 @@ enum {
         ARCHITECTURE_M68K,
         ARCHITECTURE_TILEGX,
         ARCHITECTURE_CRIS,
+        ARCHITECTURE_RISCV64,
         _ARCHITECTURE_MAX,
         _ARCHITECTURE_INVALID = -1
 };
@@ -146,6 +147,9 @@ int uname_architecture(void);
 #elif defined(__alpha__)
 #  define native_architecture() ARCHITECTURE_ALPHA
 #  define LIB_ARCH_TUPLE "alpha-linux-gnu"
+#elif defined(__riscv) && __riscv_xlen == 64
+#  define native_architecture() ARCHITECTURE_RISCV64
+#  define define LIB_ARCH_TUPLE "riscv64-linux-gnu"
 #elif defined(__aarch64__)
 #  if __BYTE_ORDER == __BIG_ENDIAN
 #    define native_architecture() ARCHITECTURE_ARM64_BE
