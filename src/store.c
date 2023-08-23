@@ -51,7 +51,6 @@
  * read() overhead.
  */
 static char smaps_buf[4096];
-static int skip = 0;
 
 double gettime_ns(void) {
         struct timespec n;
@@ -489,55 +488,36 @@ no_sched:
 
                 /* Pss */
                 if (!ps->smaps) {
-                        sprintf(filename, "%d/smaps", pid);
+                        /* smaps_rollup was introduced in kernel 4.14 */
+                        sprintf(filename, "%d/smaps_rollup", pid);
                         fd = openat(procfd, filename, O_RDONLY|O_CLOEXEC);
+                        if (fd < 0) {
+                                sprintf(filename, "%d/smaps", pid);
+                                /* If we can't open smaps_rollup, try with smaps */
+                                fd = openat(procfd, filename, O_RDONLY|O_CLOEXEC);
+                        }
                         if (fd < 0)
-                                continue;
+                                goto catch_rename;
                         ps->smaps = fdopen(fd, "re");
                         if (!ps->smaps) {
                                 close(fd);
-                                continue;
+                                goto catch_rename;
                         }
                         setvbuf(ps->smaps, smaps_buf, _IOFBF, sizeof(smaps_buf));
                 } else {
                         rewind(ps->smaps);
                 }
 
-                /* test to see if we need to skip another field */
-                if (skip == 0) {
-                        if (fgets(buf, sizeof(buf), ps->smaps) == NULL) {
-                                continue;
-                        }
-                        if (fread(buf, 1, 28 * 15, ps->smaps) != (28 * 15)) {
-                                continue;
-                        }
-                        if (buf[392] == 'V') {
-                                skip = 2;
-                        }
-                        else {
-                                skip = 1;
-                        }
-                        rewind(ps->smaps);
-                }
-
-                while (1) {
-                        int pss_kb;
-
-                        /* skip one line, this contains the object mapped. */
-                        if (fgets(buf, sizeof(buf), ps->smaps) == NULL) {
-                                break;
-                        }
-                        /* then there's a 28 char 14 line block */
-                        if (fread(buf, 1, 28 * 14, ps->smaps) != 28 * 14) {
-                                break;
-                        }
-                        pss_kb = atoi(&buf[61]);
-                        ps->sample->pss += pss_kb;
-
-                        /* skip one more line if this is a newer kernel */
-                        if (skip == 2) {
-                               if (fgets(buf, sizeof(buf), ps->smaps) == NULL)
-                                       break;
+                /* Sum all 'Pss:' lines (this is needed when we are not
+                 * reading smaps_rollup).
+                 * When reading smaps_rollup, only one 'Pss:' entry will be
+                 * present.
+                 */
+                ps->sample->pss = 0;
+                while (fgets(buf, sizeof(buf), ps->smaps) != NULL) {
+                        if(strncmp(buf, "Pss:", 4) == 0) {
+                                /* read the Pss line */
+                                ps->sample->pss += atoi(buf + 4);
                         }
                 }
 
