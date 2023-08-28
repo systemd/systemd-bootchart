@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: ${{ github.workflow }}-${{ toJSON(matrix.env) }}-${{ github.ref }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - { CC: "gcc", CFLAGS: "-fno-omit-frame-pointer -fsanitize=undefined,address -ggdb3 -Og -fvar-tracking-assignments" }
+          - { CC: "clang", CFLAGS: "-fno-omit-frame-pointer -fsanitize=undefined,address -ggdb3 -Og" }
+    env: ${{ matrix.env }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install intltool gcc llvm clang
+
+    - name: ${{ format('Build check ({0})', env.CC) }}
+      run: |
+        ./autogen.sh
+        ./configure --without-libsystemd --disable-man || cat config.log
+        make -j
+        make -j -k check
+
