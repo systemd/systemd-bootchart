@@ -17,7 +17,7 @@
 AC_PREREQ([2.64])
 
 AC_INIT([systemd-bootchart],
-        [234],
+        [235],
         [https://github.com/systemd/systemd-bootchart/issues],
         [systemd-bootchart],
         [https://github.com/systemd/systemd-bootchart/])
