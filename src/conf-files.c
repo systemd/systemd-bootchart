@@ -35,6 +35,16 @@
 #include "strv.h"
 #include "util.h"
 
+/***
+ * basename is implemented differently across different C libraries. This
+ * implementation matches the one provided by the GNU libc, and does not
+ * modify its input parameter.
+***/
+static const char *sbc_basename(const char *path) {
+        const char *base = strrchr(path, '/');
+        return base ? base + 1 : path;
+}
+
 static int files_add(Hashmap *h, const char *root, const char *path, const char *suffix) {
         _cleanup_closedir_ DIR *dir = NULL;
         const char *dirpath;
@@ -63,7 +73,7 @@ static int files_add(Hashmap *h, const char *root, const char *path, const char 
                 if (!p)
                         return -ENOMEM;
 
-                r = hashmap_put(h, basename(p), p);
+                r = hashmap_put(h, sbc_basename(p), p);
                 if (r == -EEXIST) {
                         log_debug("Skipping overridden file: %s.", p);
                         free(p);
@@ -84,7 +94,7 @@ static int base_cmp(const void *a, const void *b) {
 
         s1 = *(char * const *)a;
         s2 = *(char * const *)b;
-        return strcmp(basename(s1), basename(s2));
+        return strcmp(sbc_basename(s1), sbc_basename(s2));
 }
 
 static int conf_files_list_strv_internal(char ***strv, const char *suffix, const char *root, char **dirs) {
