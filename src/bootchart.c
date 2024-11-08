@@ -315,7 +315,6 @@ int main(int argc, char *argv[]) {
         _cleanup_closedir_ DIR *proc = NULL;
         _cleanup_free_ char *build = NULL;
         _cleanup_fclose_ FILE *of = NULL;
-        _cleanup_close_ int sysfd = -1;
         int schfd;
         struct ps_struct *ps_first;
         double graph_start;
@@ -414,9 +413,6 @@ int main(int argc, char *argv[]) {
 
                 sampledata->sampletime = gettime_ns();
                 sampledata->counter = samples;
-
-                if (sysfd < 0)
-                        sysfd = open("/sys", O_RDONLY|O_CLOEXEC);
 
                 if (!build) {
                         if (parse_env_file("/etc/os-release", NEWLINE, "PRETTY_NAME", &build, NULL) == -ENOENT)
