@@ -356,37 +356,37 @@ no_sched:
                          * these are used to paint the tree coherently later
                          * each parent has a LL of children, and a LL of siblings
                          */
-                        if (pid == 1)
-                                continue; /* nothing to do for init atm */
+                        if (pid != 1) {
+                                /* nothing to do for init atm */
 
-                        /* kthreadd has ppid=0, which breaks our tree ordering */
-                        if (ps->ppid == 0)
-                                ps->ppid = 1;
+                                /* kthreadd has ppid=0, which breaks our tree ordering */
+                                if (ps->ppid == 0)
+                                        ps->ppid = 1;
 
-                        parent = ps_first;
-                        while ((parent->next_ps && parent->pid != ps->ppid))
-                                parent = parent->next_ps;
+                                parent = ps_first;
+                                while ((parent->next_ps && parent->pid != ps->ppid))
+                                        parent = parent->next_ps;
 
-                        if (parent->pid != ps->ppid) {
-                                /* orphan */
-                                ps->ppid = 1;
-                                parent = ps_first->next_ps;
-                        }
+                                if (parent->pid != ps->ppid) {
+                                        /* orphan */
+                                        ps->ppid = 1;
+                                        parent = ps_first->next_ps;
+                                }
 
-                        ps->parent = parent;
+                                ps->parent = parent;
 
-                        /*
-                         * append ourselves to the list of children
-                         * TODO: consider if prepending is OK for efficiency here.
-                         */
-                        {
-                                struct ps_struct **children = &parent->children;
-                                while (*children)
-                                        children = &(*children)->next;
-                                *children = ps;
+                                /*
+                                 * append ourselves to the list of children
+                                 * TODO: consider if prepending is OK for efficiency here.
+                                 */
+                                {
+                                        struct ps_struct **children = &parent->children;
+                                        while (*children)
+                                                children = &(*children)->next;
+                                        *children = ps;
+                                }
                         }
                 }
-
                 /* else -> found pid, append data in ps */
 
                 /* below here is all continuous logging parts - we get here on every
