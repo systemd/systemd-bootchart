@@ -260,7 +260,7 @@
     in most browsers (including Chrome and Firefox) are many times
     faster than dedicated graphical applications like Gimp and
     Inkscape. Just point your browser at
-    <ulink url="file:///run/log/" />!
+    <ulink url="file:///run/log/" /> (the default location).
     </para>
   </refsect1>
 
@@ -324,10 +324,12 @@
     <code>root=/dev/sdxY</code>. Using UUIDs or PARTUUIDs will boot
     fine, but the hard drive model will not be added to the
     chart.</para>
-    <para>For bugs, please contact the author and current maintainer:</para>
+    <para>If you encounter a bug, then please open an issue on GitHub:</para>
     <simplelist>
-      <member>Auke Kok <email>auke-jan.h.kok@intel.com</email></member>
+      <member><ulink url="https://github.com/systemd/systemd-bootchart" /></member>
     </simplelist>
+    <para>The community thanks Auke Kok, the original author and maintainer
+    of systemd-bootchart.</para>
   </refsect1>
 
 </refentry>
