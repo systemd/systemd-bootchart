@@ -130,10 +130,10 @@ static int proc_read_full_file(int procfd, const char *fn, char **contents, size
 
 	fd = openat(procfd, fn, O_RDONLY|O_CLOEXEC);
 	if (fd < 0)
-		return log_error_errno(errno, "Failed to openat /proc/<>: %m");
+		return log_error_errno(errno, "Failed to openat /proc/%s: %m", fn);
 
-	if (fstatat(procfd, fn, &st, 0) < 0)
-		return log_error_errno(errno, "Failed to fstatat /proc/<>: %m");
+	if (fstat(fd, &st) < 0)
+		return log_error_errno(errno, "Failed to fstat /proc/%s: %m", fn);
 
 	n = LINE_MAX;
 	if (S_ISREG(st.st_mode)) {
@@ -162,7 +162,7 @@ static int proc_read_full_file(int procfd, const char *fn, char **contents, size
 		k = pread(fd, buf + l, n - l, l);
 
 		if (k < 0)
-			return log_error_errno(errno, "Failed to pread /proc/<>: %m");
+			return log_error_errno(errno, "Failed to pread /proc/%s: %m", fn);
 		if (k == 0)
 			break;
 
