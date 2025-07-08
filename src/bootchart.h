@@ -31,6 +31,8 @@
 #define MAXCPUS        512
 #define MAXPIDS    4194304
 
+// #define PRINT_DEBUG()
+
 struct block_stat_struct {
         /* /proc/vmstat pgpgin & pgpgout */
         int bi;
@@ -103,6 +105,8 @@ struct ps_struct {
 };
 
 extern bool arg_relative;
+extern bool arg_from_nowtime;
+extern int arg_duration;
 extern bool arg_filter;
 extern bool arg_show_cmdline;
 extern bool arg_show_cgroup;

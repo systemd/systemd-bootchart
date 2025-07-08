@@ -119,6 +119,16 @@ static void garbage_collect_dead_processes(struct ps_struct *ps_first) {
         }
 }
 
+static inline int _get_cpu_time_from_schedstat(FILE* statfp, double* rt, double* wt)
+{
+        char trt[256];
+        char twt[256];
+        if (!sscanf(statfp, "%s %s %*s", trt, twt))
+                return -1;
+        *rt = atoll(trt);
+        *wt = atoll(twt);
+        return 0;
+}
 
 int log_sample(DIR *proc,
                int sample,
@@ -148,7 +158,7 @@ int log_sample(DIR *proc,
         struct ps_sched_struct *ps_prev = NULL;
         int procfd;
         int taskfd = -1;
-        extern bool arg_from_nowtime;
+        bool newproc = false;
 
         sampledata = *ptr;
 
@@ -230,7 +240,7 @@ schedstat_next:
                         buf[n] = '\0';
                         sampledata->entropy_avail = atoi(buf);
                 }
-        }
+        }       //系统级整体数据解析完成
 
         while ((ent = readdir(proc)) != NULL)
         {
@@ -247,7 +257,8 @@ schedstat_next:
                         continue;
 
                 ps = ps_first;
-                while (ps->next_running) {
+                while (ps->next_running)
+                {
                         ps = ps->next_running;
                         if (ps->pid == pid)
                                 break;
@@ -324,29 +335,30 @@ schedstat_next:
                         if (r < 0)
                                 goto no_sched;
 
-                        if (arg_from_nowtime)
-                        {
-                                // 第一次采样也读取CPU 时间
-                                if (ps->schedstat < 0)
-                                {
-                                        sprintf(filename, "%d/schedstat", pid);
-                                        ps->schedstat = openat(procfd, filename, O_RDONLY|O_CLOEXEC);
-                                        if (ps->schedstat < 0)
-                                                continue;
-                                }
+                        // if (arg_from_nowtime)
+                        // {
+                        //         // 第一次采样也读取CPU 时间
+                        //         if (ps->schedstat < 0)
+                        //         {
+                        //                 sprintf(filename, "%d/schedstat", pid);
+                        //                 ps->schedstat = openat(procfd, filename, O_RDONLY|O_CLOEXEC);
+                        //                 if (ps->schedstat < 0)
+                        //                         continue;
+                        //         }
 
-                                s = pread(ps->schedstat, buf, sizeof(buf) - 1, 0);
-                                if (s <= 0)
-                                        continue;
+                        //         s = pread(ps->schedstat, buf, sizeof(buf) - 1, 0);
+                        //         if (s <= 0)
+                        //                 continue;
 
-                                buf[s] = '\0';
+                        //         buf[s] = '\0';
 
-                                if (!sscanf(buf, "%s %s %*s", rt, wt))
-                                        continue;
+                        //         if (!sscanf(buf, "%s %s %*s", rt, wt))
+                        //                 continue;
 
-                                ps->sample->runtime = atoll(rt);        // 全CPU 运行时间总计
-                                ps->total = 0;
-                        }
+                        //         ps->sample->runtime = atoll(rt);        // 全CPU 运行时间总计
+                        //         ps->total = 0;
+                        // }
+                        newproc = true;
 
                         ps->starttime /= 1000.0;
 
@@ -413,7 +425,7 @@ no_sched:
                                         *children = ps;
                                 }
                         }
-                }       // 新进程添加完成
+                }       // 新进程添加完成，但是注意这里的第一个sample结构体并不会被后续代码操作
 
 
                 /* else -> found pid, append data in ps */
@@ -438,15 +450,18 @@ no_sched:
                 if (!sscanf(buf, "%s %s %*s", rt, wt))
                         continue;
 
-                ps->sample->next = new0(struct ps_sched_struct, 1);
-                if (!ps->sample->next)
-                        return log_oom();
+                if (!newproc || !arg_from_nowtime)
+                {
+                        ps->sample->next = new0(struct ps_sched_struct, 1);
+                        if (!ps->sample->next)
+                                return log_oom();
 
-                // 如果是第一个采样，执行到这段代码的时候会跳过first sample，所以会导致ps->first->runtime == 0
-                // 所以在first sample采样的时候要把相关数据也采集一遍
-                ps->sample->next->prev = ps->sample;
-                ps->sample = ps->sample->next;
-                ps->last = ps->sample;
+                        // 如果是第一个采样，执行到这段代码的时候会跳过first sample，所以会导致ps->first->runtime == 0
+                        // 所以在first sample采样的时候要把相关数据也采集一遍
+                        ps->sample->next->prev = ps->sample;
+                        ps->sample = ps->sample->next;
+                        ps->last = ps->sample;
+                }
                 ps->sample->runtime = atoll(rt);        // 全CPU 运行时间总计
                 ps->sample->waittime = atoll(wt);       // 全CPU 调度等待时间总计
                 ps->sample->sampledata = sampledata;
@@ -464,6 +479,7 @@ no_sched:
                  */
 
                 /* Browse directory "/proc/[pid]/task" to know the thread ids of process [pid] */
+                // 计算所有线程的信息数据
                 snprintf(filename, sizeof(filename), PID_FMT "/task", pid);
                 taskfd = openat(procfd, filename, O_RDONLY|O_DIRECTORY|O_CLOEXEC);
                 if (taskfd >= 0) {
