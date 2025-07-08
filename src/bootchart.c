@@ -189,7 +189,7 @@ static int parse_argv(int argc, char *argv[]) {
         if (getpid() == 1)
                 opterr = 0;
 
-        while ((c = getopt_long(argc, argv, "ertdpf:n:o:i:FCchx:y:", options, NULL)) >= 0)
+        while ((c = getopt_long(argc, argv, "ertd:pf:n:o:i:FCchx:y:", options, NULL)) >= 0)
                 switch (c) {
 
                 case 'r':

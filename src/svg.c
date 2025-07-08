@@ -1039,7 +1039,8 @@ static void svg_ps_bars(FILE *of,
 
         /* pass 2 - ps boxes */
         ps = ps_first;
-        while ((ps = get_next_ps(ps, ps_first))) {
+        while ((ps = get_next_ps(ps, ps_first)))
+        {
                 _cleanup_free_ char *enc_name = NULL, *escaped = NULL;
                 double endtime;
                 double starttime;
