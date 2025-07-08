@@ -912,7 +912,9 @@ static bool ps_filter(struct ps_struct *ps) {
         /* drop stuff that doesn't use any real CPU time */
         if (ps->total <= 0.001)
         {
+#ifdef BOOTCHART_DEBUG
                 printf("Dropping process %s [%d] with no CPU time\n", ps->name, ps->pid);
+#endif
                 return true;
         }
 
@@ -1059,9 +1061,11 @@ static void svg_ps_bars(FILE *of,
                 /* leave some trace of what we actually filtered etc. */
                 fprintf(of, "<!-- %s [%i] ppid=%i runtime=%.03fms -->\n", enc_name, ps->pid,
                         ps->ppid, to_ms(ps->total));
+#ifdef BOOTCHART_DEBUG
                 printf("%s[%d] first runtime: %.03fms, last runtime: %.03fms\n",
                         ps->name, ps->pid,
                        to_ms(ps->first->runtime), to_ms(ps->last->runtime));
+#endif
 
                 starttime = ps->first->sampledata->sampletime;
 

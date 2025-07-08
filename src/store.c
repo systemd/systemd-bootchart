@@ -403,7 +403,9 @@ no_sched:
                                         *children = ps;
                                 }
                         }
+#ifdef BOOTCHART_DEBUG
                         printf("Found new process [%s]%d -> Parent %d\n", ps->name, pid, ps->ppid);
+#endif
                 }       // 新进程添加完成，但是注意这里的第一个sample结构体并不会被后续代码操作
 
 
