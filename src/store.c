@@ -335,29 +335,6 @@ schedstat_next:
                         if (r < 0)
                                 goto no_sched;
 
-                        // if (arg_from_nowtime)
-                        // {
-                        //         // 第一次采样也读取CPU 时间
-                        //         if (ps->schedstat < 0)
-                        //         {
-                        //                 sprintf(filename, "%d/schedstat", pid);
-                        //                 ps->schedstat = openat(procfd, filename, O_RDONLY|O_CLOEXEC);
-                        //                 if (ps->schedstat < 0)
-                        //                         continue;
-                        //         }
-
-                        //         s = pread(ps->schedstat, buf, sizeof(buf) - 1, 0);
-                        //         if (s <= 0)
-                        //                 continue;
-
-                        //         buf[s] = '\0';
-
-                        //         if (!sscanf(buf, "%s %s %*s", rt, wt))
-                        //                 continue;
-
-                        //         ps->sample->runtime = atoll(rt);        // 全CPU 运行时间总计
-                        //         ps->total = 0;
-                        // }
                         newproc = true;
 
                         ps->starttime /= 1000.0;
@@ -395,6 +372,7 @@ no_sched:
                          * these are used to paint the tree coherently later
                          * each parent has a LL of children, and a LL of siblings
                          */
+                        // 设置进程的父子关系
                         if (pid != 1) {
                                 /* nothing to do for init atm */
 
@@ -425,6 +403,7 @@ no_sched:
                                         *children = ps;
                                 }
                         }
+                        printf("Found new process [%s]%d -> Parent %d\n", ps->name, pid, ps->ppid);
                 }       // 新进程添加完成，但是注意这里的第一个sample结构体并不会被后续代码操作
 
 
@@ -470,8 +449,6 @@ no_sched:
                         ps_prev->cross = ps->sample;
 
                 ps_prev = ps->sample;
-                ps->total = (ps->last->runtime - ps->first->runtime)
-                            / 1000000000.0;
 
                 /* Take into account CPU runtime/waittime spent in non-main threads of the process
                  * by parsing "/proc/[pid]/task/[tid]/schedstat" for all [tid] != [pid]
@@ -482,7 +459,8 @@ no_sched:
                 // 计算所有线程的信息数据
                 snprintf(filename, sizeof(filename), PID_FMT "/task", pid);
                 taskfd = openat(procfd, filename, O_RDONLY|O_DIRECTORY|O_CLOEXEC);
-                if (taskfd >= 0) {
+                if (taskfd >= 0)
+                {
                         _cleanup_closedir_ DIR *taskdir = NULL;
 
                         taskdir = fdopendir(taskfd);
@@ -529,6 +507,10 @@ no_sched:
                                 ps->sample->waittime += delta_wt;
                         }
                 }
+
+                // 将total的计算移到这里，解决total计算只处理了主线程的问题
+                ps->total = (ps->last->runtime - ps->first->runtime)
+                            / 1000000000.0;
 
                 if (!arg_pss)
                         goto catch_rename;
