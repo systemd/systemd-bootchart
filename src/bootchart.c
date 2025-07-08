@@ -84,6 +84,8 @@ bool arg_filter = true;
 bool arg_show_cmdline = false;
 bool arg_show_cgroup = false;
 bool arg_pss = false;
+bool arg_from_nowtime = false;
+int arg_duration = 0;
 bool arg_percpu = false;
 int arg_samples_len = DEFAULT_SAMPLES_LEN; /* we record len+1 (1 start sample) */
 double arg_hz = DEFAULT_HZ;
@@ -132,6 +134,8 @@ static void help(void) {
         printf("Usage: %s [OPTIONS]\n\n"
                "Options:\n"
                "  -r --rel             Record time relative to recording\n"
+               "  -t --nowtime         Caculate process run-time relative to now\n"
+               "  -d --duration=DUR    Duration of recording [%g], unit is seconds\n"
                "  -f --freq=FREQ       Sample frequency [%g]\n"
                "  -n --samples=N       Stop sampling at [%d] samples\n"
                "  -x --scale-x=N       Scale the graph horizontally [%g] \n"
@@ -163,6 +167,8 @@ static int parse_argv(int argc, char *argv[]) {
 
         static const struct option options[] = {
                 {"rel",           no_argument,        NULL,  'r'       },
+                {"nowtime",       no_argument,        NULL,  't'       },
+                {"duration",      required_argument,  NULL,  'd'       },
                 {"freq",          required_argument,  NULL,  'f'       },
                 {"samples",       required_argument,  NULL,  'n'       },
                 {"pss",           no_argument,        NULL,  'p'       },
@@ -183,11 +189,26 @@ static int parse_argv(int argc, char *argv[]) {
         if (getpid() == 1)
                 opterr = 0;
 
-        while ((c = getopt_long(argc, argv, "erpf:n:o:i:FCchx:y:", options, NULL)) >= 0)
+        while ((c = getopt_long(argc, argv, "ertdpf:n:o:i:FCchx:y:", options, NULL)) >= 0)
                 switch (c) {
 
                 case 'r':
                         arg_relative = true;
+                        break;
+                case 't':
+                        arg_from_nowtime = true;
+                        break;
+                case 'd':
+                        r = safe_atoi(optarg, &arg_duration);
+                        if (r < 0)
+                                log_warning_errno(r, "failed to parse --duration/-d argument '%s': %m",
+                                                  optarg);
+                        if (arg_samples_len != DEFAULT_SAMPLES_LEN)
+                        {
+                                log_warning("--duration/-d and --samples/-n are mutually exclusive.");
+                                return -EINVAL;
+                        }
+                        arg_samples_len = 0; // 先设置为0， 等参数解析完成后再设置
                         break;
                 case 'f':
                         r = safe_atod(optarg, &arg_hz);
@@ -205,6 +226,11 @@ static int parse_argv(int argc, char *argv[]) {
                         arg_show_cgroup = true;
                         break;
                 case 'n':
+                        if (arg_samples_len != DEFAULT_SAMPLES_LEN)
+                        {
+                                log_warning("--samples/-n and --duration/-d are mutually exclusive.");
+                                return -EINVAL;
+                        }
                         r = safe_atoi(optarg, &arg_samples_len);
                         if (r < 0)
                                 log_warning_errno(r, "failed to parse --samples/-n argument '%s': %m",
@@ -255,6 +281,9 @@ static int parse_argv(int argc, char *argv[]) {
                 log_error("Frequency needs to be > 0");
                 return -EINVAL;
         }
+
+        if (arg_duration > 0)
+                arg_samples_len = arg_duration * arg_hz;
 
         return 1;
 }
@@ -399,7 +428,8 @@ int main(int argc, char *argv[]) {
         LIST_HEAD_INIT(head);
 
         /* main program loop */
-        for (samples = 0; !exiting && samples < arg_samples_len; samples++) {
+        for (samples = 0; !exiting && samples < arg_samples_len; samples++)
+        {
                 int res;
                 double sample_stop;
                 double elapsed;

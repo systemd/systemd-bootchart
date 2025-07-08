@@ -148,6 +148,7 @@ int log_sample(DIR *proc,
         struct ps_sched_struct *ps_prev = NULL;
         int procfd;
         int taskfd = -1;
+        extern bool arg_from_nowtime;
 
         sampledata = *ptr;
 
@@ -231,7 +232,8 @@ schedstat_next:
                 }
         }
 
-        while ((ent = readdir(proc)) != NULL) {
+        while ((ent = readdir(proc)) != NULL)
+        {
                 char filename[PATH_MAX];
                 int pid;
                 struct ps_struct *ps;
@@ -252,7 +254,8 @@ schedstat_next:
                 }
 
                 /* end of our LL? then append a new record */
-                if (ps->pid != pid) {
+                if (ps->pid != pid)
+                {
                         _cleanup_fclose_ FILE *st = NULL;
                         char t[32];
                         struct ps_struct *parent;
@@ -321,6 +324,30 @@ schedstat_next:
                         if (r < 0)
                                 goto no_sched;
 
+                        if (arg_from_nowtime)
+                        {
+                                // 第一次采样也读取CPU 时间
+                                if (ps->schedstat < 0)
+                                {
+                                        sprintf(filename, "%d/schedstat", pid);
+                                        ps->schedstat = openat(procfd, filename, O_RDONLY|O_CLOEXEC);
+                                        if (ps->schedstat < 0)
+                                                continue;
+                                }
+
+                                s = pread(ps->schedstat, buf, sizeof(buf) - 1, 0);
+                                if (s <= 0)
+                                        continue;
+
+                                buf[s] = '\0';
+
+                                if (!sscanf(buf, "%s %s %*s", rt, wt))
+                                        continue;
+
+                                ps->sample->runtime = atoll(rt);        // 全CPU 运行时间总计
+                                ps->total = 0;
+                        }
+
                         ps->starttime /= 1000.0;
 
 no_sched:
@@ -386,7 +413,9 @@ no_sched:
                                         *children = ps;
                                 }
                         }
-                }
+                }       // 新进程添加完成
+
+
                 /* else -> found pid, append data in ps */
 
                 /* below here is all continuous logging parts - we get here on every
@@ -413,11 +442,13 @@ no_sched:
                 if (!ps->sample->next)
                         return log_oom();
 
+                // 如果是第一个采样，执行到这段代码的时候会跳过first sample，所以会导致ps->first->runtime == 0
+                // 所以在first sample采样的时候要把相关数据也采集一遍
                 ps->sample->next->prev = ps->sample;
                 ps->sample = ps->sample->next;
                 ps->last = ps->sample;
-                ps->sample->runtime = atoll(rt);
-                ps->sample->waittime = atoll(wt);
+                ps->sample->runtime = atoll(rt);        // 全CPU 运行时间总计
+                ps->sample->waittime = atoll(wt);       // 全CPU 调度等待时间总计
                 ps->sample->sampledata = sampledata;
                 ps->sample->ps_new = ps;
                 if (ps_prev)

@@ -1055,6 +1055,9 @@ static void svg_ps_bars(FILE *of,
                 /* leave some trace of what we actually filtered etc. */
                 fprintf(of, "<!-- %s [%i] ppid=%i runtime=%.03fms -->\n", enc_name, ps->pid,
                         ps->ppid, to_ms(ps->total));
+                printf("%s first runtime: %.03fms, last runtime: %.03fms\n",
+                        ps->name,
+                       to_ms(ps->first->runtime), to_ms(ps->last->runtime));
 
                 starttime = ps->first->sampledata->sampletime;
 
