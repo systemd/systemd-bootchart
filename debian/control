@@ -1,0 +1,45 @@
+Source: systemd-bootchart
+Section: admin
+Priority: optional
+Maintainer: Debian systemd Maintainers <pkg-systemd-maintainers@lists.alioth.debian.org>
+Uploaders: Michael Biebl <biebl@debian.org>,
+           Luca Boccassi <bluca@debian.org>,
+           Marco d'Itri <md@linux.it>,
+           Sjoerd Simons <sjoerd@debian.org>,
+           Martin Pitt <mpitt@debian.org>
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+Vcs-Git: https://salsa.debian.org/systemd-team/systemd-bootchart.git
+Vcs-Browser: https://salsa.debian.org/systemd-team/systemd-bootchart
+Homepage: https://github.com/systemd/systemd-bootchart/
+Build-Depends: debhelper-compat (= 13),
+               intltool,
+               pkg-config,
+               libsystemd-dev,
+               xsltproc,
+               docbook-xsl,
+               docbook-xml,
+
+Package: systemd-bootchart
+Architecture: linux-any
+Multi-Arch: foreign
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+Description: boot performance graphing tool
+ systemd-bootchart is a tool, usually run at system startup, that collects the
+ CPU load, disk load, memory usage, as well as per-process information from a
+ running system. Collected results are output as an SVG graph. Normally,
+ systemd-bootchart is invoked by the kernel by passing
+ init=/lib/systemd/systemd-bootchart on the kernel command line.
+ systemd-bootchart will then fork the real init off to resume normal system
+ startup, while monitoring and logging startup information in the background.
+ .
+ After collecting a certain amount of data (usually 15–30 seconds, default 20s)
+ the logging stops and a graph is generated from the logged information.  This
+ graph contains vital clues as to which resources are being used, in which
+ order, and where possible problems exist in the startup sequence of the
+ system. It is essentially a more detailed version of the systemd-analyze plot
+ function.
+ .
+ bootchart can also be used at any moment in time to collect and graph some
+ data for an amount of time.

@@ -1,0 +1,51 @@
+#!/bin/sh
+# Author: Martin Pitt <martin.pitt@ubuntu.com>
+set -e
+
+if ! [ -e /etc/default/grub ]; then
+    echo "Not using grub, skipping"
+    exit 0
+fi
+
+if ! [ -x /tmp/autopkgtest-reboot ]; then
+    echo "autopkgtest testbed does not support reboot, skipping"
+    exit 0
+fi
+
+if [ ! -e /proc/schedstat ]; then
+    echo "CONFIG_SCHEDSTAT not enabled on this kernel, bootchart not available"
+    exit 0
+fi
+
+# first stage: prepare bootchart boot
+if [ -z "$ADT_REBOOT_MARK" ]; then
+    # append init= boot option
+    mkdir -p /etc/default/grub.d
+    cur_default=$(grep -h ^GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub $(ls /etc/default/grub.d/*.cfg 2>/dev/null || true) | tail -n1)
+    cur_default=$(echo "$cur_default" | sed 's!"$! init=/lib/systemd/systemd-bootchart"!')
+    echo "$cur_default" > /etc/default/grub.d/99-init-bootchart.cfg
+    update-grub 2>&1
+    rm /etc/default/grub.d/99-init-bootchart.cfg
+
+    /tmp/autopkgtest-reboot b1
+fi
+
+# second stage: should have booted with bootchart
+update-grub 2>&1 # restore original initramfs
+
+timeout=180
+while [ ! -s /run/log/bootchart*.svg -a $timeout -ge 0 ]; do
+    timeout=$((timeout - 5))
+    sleep 5
+    echo "waiting for bootchart... (${timeout}s left)"
+done
+if [ ! -s /run/log/bootchart*.svg ]; then
+    echo "timed out waiting for bootchart" >&2
+    exit 1
+fi
+
+if ! grep -q 'DOCTYPE svg' /run/log/bootchart*.svg; then
+    echo "ERROR: invalid bootchart:" >&2
+    cat /run/log/bootchart*.svg >&2
+    exit 1
+fi

@@ -1,0 +1,51 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: systemd-bootchart
+Upstream-Contact: systemd-devel@lists.freedesktop.org
+Source: https://github.com/systemd/systemd-bootchart/
+
+Files: *
+Copyright: Copyright 2000, 2005 Red Hat, Inc.
+           Copyright 2008-2013 Kay Sievers
+           Copyright 2010-2015 Lennart Poettering
+           Copyright 2013 Zbigniew Jędrzejewski-Szmek
+           Copyright 2014 Michal Schmidt
+           Copyright 2014 Tom Gundersen
+           Copyright 2015 Ronny Chevalier
+           Copyright (C) 1999, 2000 Tom Tromey
+           Copyright (C) 2009-2013 Intel Corporation
+License: LGPL-2.1+
+
+Files: src/siphash24.h
+       src/siphash24.c
+Copyright: 2012 Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>
+           2012 Daniel J. Bernstein <djb@cr.yp.to>
+License: CC0-1.0
+ To the extent possible under law, the author(s) have dedicated all copyright
+ and related and neighboring rights to this software to the public domain
+ worldwide. This software is distributed without any warranty.
+ .
+ The full text of the CC0 1.0 Universal license is available
+ https://creativecommons.org/publicdomain/zero/1.0/ and in
+ /usr/share/common-licenses/CC0-1.0 on Debian systems starting with Buster.
+
+Files: debian/*
+Copyright: (C) 2016 Martin Pitt <mpitt@debian.org>
+License: LGPL-2.1+
+
+License: LGPL-2.1+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation; either version 2.1, or (at your option)
+ any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public License along
+ with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ .
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License version 2.1 can be found in ‘/usr/share/common-licenses/LGPL-2.1’.
