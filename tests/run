@@ -22,10 +22,11 @@ t() {
         fi
 }
 
-echo 1..3
+echo 1..4
 t ./systemd-bootchart -o "$d" -n 2 -r
 t ./systemd-bootchart -o "$d" -n 10 -r
 t ./systemd-bootchart -o "$d" -n 10 -r -p
+t ./systemd-bootchart -o "$d" -F -f 10 -n 10 -p -e --per-cpu
 
 if [ $test_failures -ne 0 ]; then
         echo "# Failed $test_failures out of $test_runs tests"
