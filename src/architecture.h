@@ -59,7 +59,7 @@ enum {
         ARCHITECTURE_CRIS,
         ARCHITECTURE_RISCV64,
         ARCHITECTURE_RISCV32,
-	ARCHITECTURE_LOONGARCH,
+        ARCHITECTURE_LOONGARCH64,
         _ARCHITECTURE_MAX,
         _ARCHITECTURE_INVALID = -1
 };
@@ -155,9 +155,9 @@ int uname_architecture(void);
 #elif defined(__riscv) && __riscv_xlen == 32
 #  define native_architecture() ARCHITECTURE_RISCV32
 #  define define LIB_ARCH_TUPLE "riscv32-linux-gnu"
-#elif defined(__loongarch__) && __loongarch_grlen == 64
-#  define native_architecture() ARCHITECTURE_LOONGARCH
-#  define define LIB_ARCH_TUPLE "loongarch64-linux-gnu"
+#elif defined(__loongarch64)
+#    define native_architecture() ARCHITECTURE_LOONGARCH64
+#    define LIB_ARCH_TUPLE "loongarch64-linux-gnu"
 #elif defined(__aarch64__)
 #  if __BYTE_ORDER == __BIG_ENDIAN
 #    define native_architecture() ARCHITECTURE_ARM64_BE
