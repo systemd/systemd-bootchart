@@ -20,6 +20,8 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
  ***/
 
+#define _POSIX_C_SOURCE
+
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -29,6 +31,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "alloc-util.h"
 #include "bootchart.h"
@@ -119,6 +122,68 @@ static void garbage_collect_dead_processes(struct ps_struct *ps_first) {
         }
 }
 
+static int proc_read_full_file(int procfd, const char *fn, char **contents, size_t *size) {
+	int fd = -1;
+	size_t n, l;
+	_cleanup_free_ char *buf = NULL;
+	struct stat st;
+
+	fd = openat(procfd, fn, O_RDONLY|O_CLOEXEC);
+	if (fd < 0)
+		return log_error_errno(errno, "Failed to openat /proc/%s: %m", fn);
+
+	if (fstat(fd, &st) < 0)
+		return log_error_errno(errno, "Failed to fstat /proc/%s: %m", fn);
+
+	n = LINE_MAX;
+	if (S_ISREG(st.st_mode)) {
+
+	        /* Safety check */
+		if (st.st_size > 4*1024*1024)
+			return -E2BIG;
+
+		/* Start with the right file size, but be prepared for
+		 * files from /proc which generally report a file size
+		 * of 0 */
+		if (st.st_size > 0)
+			n = st.st_size;
+	}
+
+	l = 0;
+	for (;;) {
+		char *t;
+		ssize_t k;
+
+		t = realloc(buf, n+1);
+		if (!t)
+			return -ENOMEM;
+
+		buf = t;
+		k = pread(fd, buf + l, n - l, l);
+
+		if (k < 0)
+			return log_error_errno(errno, "Failed to pread /proc/%s: %m", fn);
+		if (k == 0)
+			break;
+
+		l += k;
+		n *= 2;
+
+		/* Safety check */
+		if (n > 4*1024*1024)
+			return -E2BIG;
+	}
+
+	buf[l] = 0;
+	*contents = buf;
+	buf = NULL; /* do not free */
+
+	if (size)
+		*size = l;
+
+	safe_close(fd);
+	return 0;
+}
 
 int log_sample(DIR *proc,
                int sample,
@@ -189,7 +254,7 @@ vmstat_next:
         }
 
         /* Parse "/proc/schedstat" for overall CPU utilization */
-        r = read_full_file("/proc/schedstat", &buf_schedstat, NULL);
+        r = proc_read_full_file(procfd, "schedstat", &buf_schedstat, NULL);
         if (r < 0)
             return log_error_errno(r, "Unable to read schedstat: %m");
 
