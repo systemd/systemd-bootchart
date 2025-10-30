@@ -44,6 +44,8 @@
 #include <sys/uio.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <libgen.h>
 
 #ifdef HAVE_LIBSYSTEMD
 #include <systemd/sd-journal.h>
@@ -310,6 +312,38 @@ static int do_journal_append(char *file) {
         return 0;
 }
 
+
+static int is_mountpoint(const char *path) {
+        struct stat s_path, s_parent;
+        char *path_aux, *parent_path;
+
+        // Root is always a mountpoint
+        if (strcmp(path, "/") == 0) {
+                return 1;
+        }
+
+        if (stat(path, &s_path) == -1) {
+                return -1;
+        }
+
+        // Duplicate path as dirname can modify it
+        path_aux = strdup(path);
+        if (!path_aux) {
+                return -1;
+        }
+
+        parent_path = dirname(path_aux);
+        if (stat(parent_path, &s_parent) == -1) {
+                free(path_aux);
+                return -1;
+        }
+
+        free(path_aux);
+
+        // mount point if the directory and its parent are on different devices (filesystems)
+        return (s_path.st_dev != s_parent.st_dev);
+}
+
 int main(int argc, char *argv[]) {
         static struct list_sample_data *sampledata;
         _cleanup_closedir_ DIR *proc = NULL;
@@ -333,6 +367,7 @@ int main(int argc, char *argv[]) {
                 .sa_handler = signal_handler,
         };
         bool has_procfs = false;
+        bool sysroot_mounted = false;
 
         parse_conf();
 
@@ -432,6 +467,25 @@ int main(int argc, char *argv[]) {
                         r = log_sample(proc, samples, ps_first, &sampledata, &pscount, &n_cpus);
                         if (r < 0)
                                 return EXIT_FAILURE;
+                }
+                if (!sysroot_mounted) {
+                        // sysroot is where systemd will switch root when
+                        // switching from initramfs to the root fs. We chroot
+                        // there so we can write later the svg file.
+                        //
+                        // TODO instead of detecting this way, use signal from initramfs service.
+                        sysroot_mounted = is_mountpoint("/sysroot") == 1;
+                        if (sysroot_mounted) {
+                                // chroot does not change the cwd of the process, so we do that first
+                                if (chdir("/sysroot") != 0) {
+                                        log_info_errno(errno, "cannot chdir to /sysroot: %m\n");
+                                        return EXIT_FAILURE;
+                                }
+                                if (chroot(".") != 0)  {
+                                        log_info_errno(errno, "cannot chroot: %m\n");
+                                        return EXIT_FAILURE;
+                                }
+                        }
                 }
 
                 sample_stop = gettime_ns();
