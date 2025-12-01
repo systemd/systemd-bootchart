@@ -2,8 +2,8 @@
 d=
 cleanup() {
         if [ -n "$d" ]; then
-                d=
                 rm -rf "$d"
+                d=
         fi
 }
 trap cleanup EXIT
